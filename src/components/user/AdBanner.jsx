@@ -12,7 +12,7 @@ export default function AdBanner({ image, link, onContact }) {
 
       {/* Contact Button */}
       {onContact && (
-        <a href="mailto:hmediachannel@gmail.com">
+        <a href="mailto:admin@channelhmedia.in">
           <button
             className="
           absolute bottom-2 sm:bottom-3 md:bottom-2 xl:bottom-4 left-1/2 -translate-x-1/2

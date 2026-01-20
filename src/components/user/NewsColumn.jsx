@@ -110,12 +110,31 @@ export default function NewsColumn({
                   </h3>
 
                   {item.content && (
-                    <div className="text-xs sm:text-sm md:[text-14px]  text-black mt-1.5 leading-relaxed font-mal">
-                      {trending
-                        ? sanitizeContent(item.content, 40)
-                        : sanitizeContent(item.content, 70)}
+                    <div className="text-xs sm:text-sm md:text-[14px] text-black mt-1.5 leading-relaxed font-mal">
+                      {trending ? (
+                        <>
+                          {/* Mobile → LG (trending) */}
+                          <span className="xl:hidden">
+                            {sanitizeContent(item.content, 40)}
+                          </span>
+
+                          {/* XL only (trending) */}
+                          <span className="hidden xl:inline 2xl:hidden">
+                            {sanitizeContent(item.content, 30)}
+                          </span>
+
+                          {/* 2XL+ (trending) */}
+                          <span className="hidden 2xl:inline">
+                            {sanitizeContent(item.content, 50)}
+                          </span>
+                        </>
+                      ) : (
+                        /* Non-trending (always normal) */
+                        sanitizeContent(item.content, 70)
+                      )}
                     </div>
                   )}
+
                   {item.date && (
                     <p className="text-[10px] sm:text-xs text-gray-500 mt-1">
                       {formatDate(item.date)}

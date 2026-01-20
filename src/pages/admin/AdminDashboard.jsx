@@ -86,7 +86,7 @@ export default function AdminDashboard() {
         const sortedRecent = allArticles.sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );
-        setRecentArticles(sortedRecent.slice(0, 5));
+        setRecentArticles(sortedRecent.slice(0, 3));
       } catch (err) {
         console.error("Failed to load dashboard stats");
       } finally {

@@ -57,19 +57,29 @@ function Footer() {
                 <span className="text-sm md:text-base text-white">
                   Contact Us :
                 </span>
-                <Link
-                  to="mailto:hmediachannel@gmail.com"
+                <a
+                  href="mailto:admin@channelhmedia.in"
                   className="ml-2 text-sm md:text-base text-brand-gold hover:underline"
                 >
-                  hmediachannel@gmail.com
-                </Link>
+                  admin@channelhmedia.in
+                </a>
               </div>
             </div>
-            <p>
-              © {new Date().getFullYear()}
-              <span className="text-brand-gold"> CHANNEL HMEDIA</span>. All
-              Rights Reserved.
-            </p>
+            <div className="text-center lg:text-right">
+              <p>
+                © {new Date().getFullYear()}
+                <span className="text-brand-gold"> CHANNEL HMEDIA</span>. All
+                Rights Reserved.
+              </p>
+              <div className="mt-3 text-[11px] opacity-70 flex items-center justify-center lg:justify-end gap-1">
+                Designed by
+                <img
+                  src="/copyright-logo.png"
+                  alt="Company Name"
+                  className="h-4 w-auto"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </footer>

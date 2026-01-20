@@ -89,9 +89,9 @@ function AdminMoreNewsPage() {
 
     try {
       if (view === "add") {
-        await addMoreNews(baseURL,form);
+        await addMoreNews(baseURL, form);
       } else {
-        await updateMoreNews(baseURL,articleData.id, form);
+        await updateMoreNews(baseURL, articleData.id, form);
       }
 
       await loadData();
@@ -114,7 +114,7 @@ function AdminMoreNewsPage() {
     if (!itemToDelete) return;
     setIsDeleting(true);
     try {
-      await deleteMoreNews(baseURL,itemToDelete.id);
+      await deleteMoreNews(baseURL, itemToDelete.id);
       await loadData();
     } catch (err) {
       console.error("Failed to delete item");
@@ -159,6 +159,11 @@ function AdminMoreNewsPage() {
       header: "Title",
       accessor: "title",
       cellClassName: "font-medium text-gray-900 max-w-sm truncate",
+    },
+    {
+      header: "SLUG",
+      accessor: "slug",
+      cellClassName: "font-medium text-gray-900 max-w-xs truncate",
     },
 
     {

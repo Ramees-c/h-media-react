@@ -42,7 +42,7 @@ export default function FullWidthAd({ ads }) {
                 {/* Contact Button */}
                 {ad.showContact && (
                   <a
-                    href="mailto:hmediachannel@gmail.com"
+                    href="mailto:admin@channelhmedia.in"
                     className="
                     absolute bottom-8 right-1
                     md:bottom-16 md:right-2 lg:bottom-16 lg:right-2 xl:bottom-22 xl:right-3 2xl:bottom-28 2xl:right-3

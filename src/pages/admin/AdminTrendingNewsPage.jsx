@@ -105,6 +105,11 @@ function AdminTrendingNewsPage() {
       ),
     },
     {
+      header: "SLUG",
+      accessor: "slug",
+      cellClassName: "font-medium text-gray-900 max-w-xs truncate",
+    },
+    {
       header: "Date",
       accessor: "date",
       cell: (row) => (

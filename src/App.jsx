@@ -5,6 +5,9 @@ import ConditionalLayout from "./components/user/ConditionalLayout";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import DefaultSEO from "./components/user/DefaultSEO";
 import { Helmet } from "react-helmet-async";
+import ArticleCategoryGuard from "./components/user/ArticleCategoryGuard";
+// import FourNotFour from "./pages/FourNotFour";
+const FourNotFour = lazy(() => import("./pages/FourNotFour"));
 
 const Home = lazy(() => import("./pages/Home"));
 const LatestNewsPage = lazy(() => import("./pages/LatestNewsPage"));
@@ -46,15 +49,15 @@ function App() {
         <title>CHANNEL HMEDIA | THE COMPLETE FILIM MAGAZINE</title>
         <meta
           name="description"
-          content="Latest breaking news, India news, politics, cinema, sports and more from Channel H Media."
+          content="Get the latest scoop on the film industry with HMEDIA. Your source for cinema news, celebrity interviews, official teasers, and promotional videos."
         />
         <meta property="og:title" content="CHANNEL HMEDIA" />
         <meta
           property="og:description"
-          content="Latest breaking news, India news, politics, cinema, sports and more from Channel H Media."
+          content="Get the latest scoop on the film industry with HMEDIA. Your source for cinema news, celebrity interviews, official teasers, and promotional videos."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Channel H Media" />
+        <meta property="og:site_name" content="CHANNEL HMEDIA" />
       </Helmet>
 
       <DefaultSEO />
@@ -67,14 +70,23 @@ function App() {
           <Route path="/meettheperson" element={<MeetThePersonPage />} />
           <Route path="/teaserandpromo" element={<TeaserAndPromoPage />} />
           <Route path="/more" element={<MoreNewsPage />} />
-          <Route path="/:category/:slug" element={<ArticleDetailPage />} />
+          <Route
+            path="/:category/:slug"
+            element={
+              <ArticleCategoryGuard>
+                <ArticleDetailPage />
+              </ArticleCategoryGuard>
+            }
+          />
           <Route path="/hmedianews/login" element={<LoginPage />} />
+          <Route path="/404" element={<FourNotFour />} />
+          <Route path="*" element={<FourNotFour />} />
 
           {/* Admin routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/hmedianews" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
-              {/* Home Banner Page */}
+              
               <Route path="homebanner" element={<HomeBannerPage />} />
               <Route path="flashnews" element={<AdminFlashNewsPage />} />
               <Route path="trendingnews" element={<AdminTrendingNewsPage />} />

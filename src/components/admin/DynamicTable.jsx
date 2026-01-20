@@ -1,18 +1,47 @@
-import { Inbox } from "lucide-react";
+import { Inbox, Search } from "lucide-react";
 import { useState } from "react";
 
 export default function DynamicTable({
   columns,
   data,
   uniqueKeyAccessor = "id",
+  searchAccessor = "slug",
+  search = true,
 }) {
   const [popupImage, setPopupImage] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   if (!columns || !data) {
     return <p>Table configuration or data is missing.</p>;
   }
 
+  const filteredData = data.filter((row) =>
+    String(row[searchAccessor] || "")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="bg-white shadow-sm rounded-lg overflow-x-auto">
+      {/* Search Box */}
+      {search && (
+        <>
+          <div className="p-4 border-b">
+            <div className="relative w-full sm:w-72">
+              <Search
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+              <input
+                type="text"
+                placeholder={`Search by ${searchAccessor}...`}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-brand-red"
+              />
+            </div>
+          </div>
+        </>
+      )}
       <table className="w-full text-sm text-left text-gray-700">
         <thead className="bg-gray-50 text-xs text-gray-600 uppercase tracking-wider font-medium">
           <tr>
@@ -28,8 +57,8 @@ export default function DynamicTable({
           </tr>
         </thead>
         <tbody>
-          {data.length > 0 ? (
-            data.map((row, index) => (
+          {filteredData.length > 0 ? (
+            filteredData.map((row, index) => (
               <tr
                 key={row[uniqueKeyAccessor]}
                 className="bg-white border-b border-gray-200 hover:bg-gray-50 last:border-b-0"

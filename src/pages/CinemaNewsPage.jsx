@@ -11,7 +11,11 @@ import NewsPagination from "../components/user/NewsPagination";
 import ArticleCard from "../components/user/ArticleCard";
 import CustomLoader from "../components/user/CustomLoader";
 
-function CinemaNewsPage({ searchParams }) {
+import { useSearchParams } from "react-router-dom";
+import { InlineGoogleAd } from "../components/user/GoogleAd";
+
+function CinemaNewsPage() {
+  const [searchParams] = useSearchParams();
   const { baseURL } = useApi();
 
   const [cinemaNews, setCinemaNews] = useState([]);
@@ -19,8 +23,8 @@ function CinemaNewsPage({ searchParams }) {
   const [bannerAds, setBannerAds] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const currentPage = Number(searchParams?.page) || 1;
-  const itemsPerPage = 9;
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const itemsPerPage = 12;
 
   useEffect(() => {
     const loadData = async () => {
@@ -75,6 +79,13 @@ function CinemaNewsPage({ searchParams }) {
     loadData();
   }, [baseURL]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [searchParams]);
+
   const totalPages = Math.ceil(cinemaNews.length / itemsPerPage);
   const safeCurrentPage = Math.max(1, Math.min(currentPage, totalPages));
   const startIndex = (safeCurrentPage - 1) * itemsPerPage;
@@ -101,6 +112,8 @@ function CinemaNewsPage({ searchParams }) {
             Cinema News
           </h2>
 
+           <InlineGoogleAd slot="2236151560" />
+
           <div className="grid md:grid-cols-3 gap-3">
             {/* Map through the sample data to display the articles */}
             {currentArticles.map((article) => (
@@ -116,6 +129,8 @@ function CinemaNewsPage({ searchParams }) {
             ))}
           </div>
 
+           <InlineGoogleAd slot="7488478241" />
+
           <NewsPagination
             currentPage={safeCurrentPage}
             totalPages={totalPages}
@@ -124,7 +139,8 @@ function CinemaNewsPage({ searchParams }) {
           <FullWidthAd ads={bannerAds} />
         </div>
 
-        <aside className="lg:col-span-3 space-y-8 lg:sticky lg:top-24 self-start">
+        <aside className="lg:col-span-3 space-y-8 lg:sticky lg:top-24 self-start lg:mt-9">
+          <InlineGoogleAd slot="9923069891" />
           <AdList ads={squareAds} />
         </aside>
       </div>

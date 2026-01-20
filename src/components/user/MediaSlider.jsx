@@ -99,15 +99,15 @@ export default function MediaSlider({
           modules={[Autoplay, FreeMode]}
           spaceBetween={7}
           slidesPerView={"auto"}
-          loop={true}
-          freeMode={true}
+          loop={items.length > 4}
+         freeMode={{ enabled: true, momentum: false }}
           speed={4000}
           autoplay={{
-            delay: 1,
+            delay: 0,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
           }}
-          className="!px-1"
+          className="!px-1 will-change-transform"
         >
           {items.map((item, index) => (
             <SwiperSlide key={index} className="!w-72">
@@ -144,11 +144,11 @@ export default function MediaSlider({
                   onClick={handleLinkClick}
                   className="group flex flex-col mb-3"
                 >
-                  <div className="w-full h-44 overflow-hidden rounded-lg mb-3">
+                  <div className="w-full overflow-hidden rounded-lg mb-3 aspect-video">
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-full h-full object-fill transition group-hover:scale-105"
+                      className="w-full h-full object-fill transform-gpu transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
 

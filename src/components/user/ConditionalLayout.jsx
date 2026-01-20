@@ -4,16 +4,34 @@ import FlashNews from "./FlashNews";
 import Footer from "./Footer";
 import CustomLoader from "./CustomLoader";
 
-export default function ConditionalLayout({ children,loading  }) {
+export default function ConditionalLayout({ children, loading }) {
   const location = useLocation();
+
   const isAdminPage = location.pathname.startsWith("/hmedianews");
+
+  // PUBLIC ROUTES ONLY
+  const publicRoutes = [
+    "/",
+    "/latestnews",
+    "/cinemanews",
+    "/meettheperson",
+    "/teaserandpromo",
+    "/more",
+  ];
+
+  const isArticlePage = location.pathname.split("/").length === 3;
+
+  const is404 =
+    !publicRoutes.includes(location.pathname) &&
+    !isArticlePage &&
+    !isAdminPage;
 
   if (loading) {
     return <CustomLoader />;
   }
 
-  // Admin pages → no header/footer
-  if (isAdminPage) {
+  // Admin & 404 → no layout
+  if (isAdminPage || is404) {
     return <>{children}</>;
   }
 

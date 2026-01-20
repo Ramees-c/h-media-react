@@ -149,6 +149,12 @@ function AdminCinemaNewsPage() {
     },
 
     {
+      header: "SLUG",
+      accessor: "slug",
+      cellClassName: "font-medium text-gray-900 max-w-xs truncate",
+    },
+
+    {
       header: "Date",
       accessor: "publishedDate",
     },

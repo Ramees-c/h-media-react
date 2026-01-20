@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, UploadCloud } from "lucide-react";
+import { X, UploadCloud, ChevronDown } from "lucide-react";
 
 const PAGE_TYPE_OPTIONS = [
   "Home",
@@ -29,6 +29,7 @@ export default function AdvertisementFormPopup({
   const [imageFile, setImageFile] = useState(null);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -247,25 +248,47 @@ export default function AdvertisementFormPopup({
           {/* Page Type & Order */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label
-                htmlFor="pageType"
-                className="block text-sm font-medium text-gray-300"
-              >
-                Page Type
-              </label>
-              <select
-                id="pageType"
-                name="pageType"
-                value={formData.pageType}
-                onChange={handleInputChange}
-                className="mt-1 block w-full bg-gray-900 border border-gray-600 focus:outline-none focus:ring-0 focus:border-brand-red rounded-lg py-2.5 px-3 text-sm focus:outline-none cursor-pointer"
-              >
-                {PAGE_TYPE_OPTIONS.map((opt, index) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
+              <div className="relative w-full">
+                <label
+                  htmlFor="pageType"
+                  className="block text-sm font-medium text-gray-300 mb-1"
+                >
+                  Page Type
+                </label>
+
+                <button
+                  type="button"
+                  className="w-full sm:w-60 bg-gray-900 border border-gray-600 rounded-lg pl-4 pr-10 py-2 text-left flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-brand-red transition-all cursor-pointer"
+                  onClick={() => setDropdownOpen((prev) => !prev)}
+                >
+                  <span>{formData.pageType}</span>
+                  <ChevronDown
+                    size={20}
+                    className="text-gray-400 transition-transform"
+                  />
+                </button>
+
+                {dropdownOpen && (
+                  <ul className="absolute z-50 mt-1 sm:w-60 w-full bg-gray-900 border border-gray-600 rounded-lg shadow-lg max-h-60 overflow-auto scrollbar-hide">
+                    {PAGE_TYPE_OPTIONS.map((opt) => (
+                      <li
+                        key={opt}
+                        className={`px-4 py-2 cursor-pointer text-gray-300 hover:bg-brand-red hover:text-white transition-colors ${
+                          formData.pageType === opt
+                            ? "bg-brand-red text-white"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          setFormData((prev) => ({ ...prev, pageType: opt }));
+                          setDropdownOpen(false);
+                        }}
+                      >
+                        {opt}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
             <div>
               <label

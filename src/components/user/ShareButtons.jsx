@@ -39,37 +39,27 @@ export default function ShareButtons({
   /* --------------------------------
      COPY LINK
   -------------------------------- */
- const copyToClipboard = async () => {
-  try {
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(url);
-    } else {
-      const textArea = document.createElement("textarea");
-      textArea.value = url;
-      textArea.style.position = "fixed";
-      textArea.style.left = "-9999px";
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
+  const copyToClipboard = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = url;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Copy failed");
     }
-
-    setCopied(true); // ✅ Correct state
-    setTimeout(() => setCopied(false), 2000);
-  } catch (err) {
-    console.error("Copy failed", err);
-  }
-};
-
-
-  /* --------------------------------
-     INSTAGRAM SHARE (CORRECT WAY)
-     → Copy link + open Instagram
-  -------------------------------- */
-  const shareToInstagram = async () => {
-    await copyToClipboard();
-    window.open("https://www.instagram.com/", "_blank");
   };
 
   /* --------------------------------
@@ -149,15 +139,6 @@ export default function ShareButtons({
                   {social.icon}
                 </a>
               ))}
-
-              {/* INSTAGRAM */}
-              <button
-                onClick={shareToInstagram}
-                title="Share on Instagram (link copied)"
-                className="p-2 rounded-full bg-brand-dark text-white hover:bg-[#E4405F]"
-              >
-                <Instagram size={20} />
-              </button>
 
               {/* COPY LINK */}
               <button

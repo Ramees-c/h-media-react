@@ -12,8 +12,10 @@ export default function FlashNews() {
       try {
         const data = await fetchFlashNews(baseURL);
 
-        const activeNews = data.filter(
-          (item) => item.status?.toLowerCase() === "active"
+         const activeNews = data
+        .filter((item) => item.status?.toLowerCase() === "active")
+        .sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );
 
         setFlash(activeNews);
@@ -24,6 +26,9 @@ export default function FlashNews() {
 
     load();
   }, [baseURL]);
+
+ 
+  
 
   if (!flash.length)
     return (
@@ -62,7 +67,7 @@ export default function FlashNews() {
       <style>{`
   .marquee {
     display: inline-flex;
-    animation: marquee 20s linear infinite;
+    animation: marquee 40s linear infinite;
   }
   .marquee:hover {
     animation-play-state: paused;

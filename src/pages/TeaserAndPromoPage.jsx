@@ -5,13 +5,16 @@ import NewsPagination from "../components/user/NewsPagination";
 import VideoPlayerWrapper from "../components/user/VideoModalWrapper";
 import CustomLoader from "../components/user/CustomLoader";
 
-function TeaserAndPromoPage({ searchParams }) {
+import { useSearchParams } from "react-router-dom";
+
+function TeaserAndPromoPage() {
+  const [searchParams] = useSearchParams();
   const { baseURL } = useApi();
 
   const [teasers, setTeasers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const page = Number(searchParams?.page) || 1;
+  const page = Number(searchParams.get("page")) || 1;
   const itemsPerPage = 12;
 
   useEffect(() => {
@@ -34,6 +37,13 @@ function TeaserAndPromoPage({ searchParams }) {
 
     loadData();
   }, [baseURL]);
+
+   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [searchParams]);
 
   const totalPages = Math.ceil(teasers.length / itemsPerPage);
   const safePage = Math.max(1, Math.min(page, totalPages));

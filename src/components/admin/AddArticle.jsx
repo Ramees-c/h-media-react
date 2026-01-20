@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import DatePicker from "react-datepicker";
 import { UploadCloud, X } from "lucide-react";
 import ReactQuill from "react-quill-new";
+import "../../videoBlot";
 
 import "react-quill-new/dist/quill.snow.css";
 import "react-datepicker/dist/react-datepicker.css";
@@ -23,6 +24,7 @@ function AddArticle({
   serverError,
 }) {
   const quillRef = useRef(null);
+
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [imageFile, setImageFile] = useState(null);
@@ -42,7 +44,7 @@ function AddArticle({
     const input = document.createElement("input");
     input.type = "file";
 
-    // ✅ allow ALL image formats
+    // allow ALL image formats
     input.accept = "image/*,.jpg,.jpeg,.png,.gif,.webp,.svg,.bmp,.avif";
 
     input.click();
@@ -51,13 +53,11 @@ function AddArticle({
       const file = input.files?.[0];
       if (!file) return;
 
-      // Optional: size check (5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert("Image must be under 5MB");
         return;
       }
 
-      // OPTION A (simple): insert as base64
       const reader = new FileReader();
       reader.onload = () => {
         const quill = quillRef.current.getEditor();
@@ -65,10 +65,6 @@ function AddArticle({
         quill.insertEmbed(range.index, "image", reader.result);
       };
       reader.readAsDataURL(file);
-
-      // OPTION B (BEST PRACTICE): upload to backend
-      // const imageUrl = await uploadImageToServer(file);
-      // quill.insertEmbed(range.index, "image", imageUrl);
     };
   };
 
@@ -98,6 +94,7 @@ function AddArticle({
       setTags((t) => t.slice(0, -1));
     }
   };
+  
 
   const modules = useMemo(
     () => ({
@@ -118,7 +115,7 @@ function AddArticle({
           ["clean"],
         ],
         handlers: {
-          image: handleQuillImage, // ✅ IMPORTANT
+          image: handleQuillImage, 
         },
       },
       clipboard: {
@@ -380,8 +377,7 @@ function AddArticle({
             Content
           </label>
 
-          <div className="ql-editor">
-            <ReactQuill
+          <ReactQuill
             ref={quillRef}
             theme="snow"
             value={content}
@@ -391,7 +387,6 @@ function AddArticle({
             className="h-96"
             placeholder="Write your content here..."
           />
-          </div>
 
           {errors.content && (
             <p className="text-red-600 text-sm mt-14">{errors.content}</p>
@@ -616,6 +611,8 @@ function AddArticle({
           </button>
         </div>
       </form>
+
+      
     </div>
   );
 }

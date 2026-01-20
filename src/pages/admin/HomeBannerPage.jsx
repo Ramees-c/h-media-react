@@ -214,7 +214,7 @@ function HomeBannerPage() {
         </div>
         <button
           onClick={handleAddNew}
-          className="flex items-center gap-2 bg-brand-red text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-700 transition-all w-full md:w-auto justify-center cursor-pointer"
+          className="flex items-center gap-2 bg-brand-red text-white font-semibold px-4 py-2 rounded-lg hover:bg-brand-dark transition-all w-full md:w-auto justify-center cursor-pointer"
         >
           <Plus size={20} />
           Add New Banner

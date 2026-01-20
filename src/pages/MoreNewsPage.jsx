@@ -11,13 +11,14 @@ import NewsPagination from "../components/user/NewsPagination";
 import AdList from "../components/user/AdList";
 import FullWidthAd from "../components/user/FullWidthAd";
 import CustomLoader from "../components/user/CustomLoader";
+import { InlineGoogleAd } from "../components/user/GoogleAd";
 
 function MoreNewsPage() {
   const { baseURL } = useApi();
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
-  const itemsPerPage = 9;
+  const itemsPerPage = 12;
 
   const [articles, setArticles] = useState([]);
   const [squareAds, setSquareAds] = useState([]);
@@ -86,6 +87,10 @@ function MoreNewsPage() {
   const startIndex = (safeCurrentPage - 1) * itemsPerPage;
   const currentArticles = articles.slice(startIndex, startIndex + itemsPerPage);
 
+   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [safeCurrentPage]);
+
   if (loading) {
     return (
       <>
@@ -105,6 +110,8 @@ function MoreNewsPage() {
             More News
           </h2>
 
+          <InlineGoogleAd slot="2236151560" />
+
           <div className="grid md:grid-cols-3 gap-3">
             {/* Map through the sample data to display the articles */}
             {currentArticles.map((article) => (
@@ -119,6 +126,8 @@ function MoreNewsPage() {
               />
             ))}
           </div>
+
+          <InlineGoogleAd slot="7488478241" />
           <NewsPagination
             currentPage={safeCurrentPage}
             totalPages={totalPages}
@@ -126,7 +135,8 @@ function MoreNewsPage() {
           <FullWidthAd ads={bannerAds} />
         </div>
 
-        <aside className="lg:col-span-3 space-y-8 lg:sticky lg:top-24 self-start">
+        <aside className="lg:col-span-3 space-y-8 lg:sticky lg:top-24 self-start lg:mt-9">
+          <InlineGoogleAd slot="9923069891" />
           <AdList ads={squareAds} />
         </aside>
       </div>

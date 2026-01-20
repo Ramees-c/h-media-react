@@ -17,6 +17,7 @@ import FullWidthAd from "../components/user/FullWidthAd";
 import AdList from "../components/user/AdList";
 import MediaSlider from "../components/user/MediaSlider";
 import CustomLoader from "../components/user/CustomLoader";
+import { InlineGoogleAd } from "../components/user/GoogleAd";
 
 const getYouTubeId = (url) => {
   if (!url) return null;
@@ -98,8 +99,8 @@ function Home() {
               }))
             );
           })
-          .catch((err) => console.error("Trending News Error", err))
-           .finally(() => setLoadingTrending(false))
+          .catch((err) => console.error("Trending News Error"))
+          .finally(() => setLoadingTrending(false))
       );
 
       /* -------- Cinema News -------- */
@@ -120,7 +121,7 @@ function Home() {
             );
           })
           .catch((err) => console.error("Cinema News Error"))
-           .finally(() => setLoadingCinema(false))
+          .finally(() => setLoadingCinema(false))
       );
 
       /* -------- Meet The Person -------- */
@@ -141,7 +142,7 @@ function Home() {
             );
           })
           .catch((err) => console.error("Meet Person Error"))
-           .finally(() => setLoadingMeet(false))
+          .finally(() => setLoadingMeet(false))
       );
 
       /* -------- More News -------- */
@@ -268,10 +269,13 @@ function Home() {
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
       <section className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-3 items-start">
+          {/* HERO */}
           <div className="lg:col-span-3">
             <Hero banners={banners} />
           </div>
+
+          {/* TRENDING */}
           <div className="mt-6 xl:mt-0">
             <NewsColumn
               title="TRENDING NEWS"
@@ -281,9 +285,12 @@ function Home() {
               category="trending-news"
             />
           </div>
+          <InlineGoogleAd slot="9731498203" />
         </div>
-      </section>
 
+        {/* ---------- Horizontal Ad under Banner & Trending ---------- */}
+        <InlineGoogleAd slot="2236151560" />
+      </section>
       <section className="w-full lg:py-12">
         <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           <div className="mb-6 xl:mb-0">
@@ -312,10 +319,10 @@ function Home() {
           </div>
         </div>
       </section>
-
-      <div className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* ================= LEFT COLUMN (Content 8/12) ================= */}
         <div className="lg:col-span-9 flex flex-col gap-5">
+          <InlineGoogleAd slot="7488478241" />
           {bannerAds && <FullWidthAd ads={bannerAds} />}
 
           <div className="my-6 lg:my-0">
@@ -325,7 +332,8 @@ function Home() {
         </div>
 
         {/* ================= RIGHT COLUMN (Sidebar 4/12) ================= */}
-        <aside className="lg:col-span-3 space-y-8 lg:sticky lg:top-24 self-start">
+        <aside className="lg:col-span-3 space-y-8 lg:sticky lg:top-24 self-start lg:mt-8">
+          <InlineGoogleAd slot="9923069891" />
           <AdList ads={squareAds} />
         </aside>
       </div>

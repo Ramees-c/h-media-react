@@ -4,10 +4,7 @@ import { Helmet } from "react-helmet-async";
 
 import { Clock, User, FileQuestion } from "lucide-react";
 import { useApi } from "../context/ApiContext";
-import {
-  fetchArticleBySlug,
-  fetchArticleBySlugForShare,
-} from "../services/fetchArticleBySlug";
+import { fetchArticleBySlug } from "../services/fetchArticleBySlug";
 import {
   fetchBannerAds,
   fetchSquareAds,
@@ -16,6 +13,7 @@ import AdList from "../components/user/AdList";
 import FullWidthAd from "../components/user/FullWidthAd";
 import ShareButtons from "../components/user/ShareButtons";
 import CustomLoader from "../components/user/CustomLoader";
+import { InlineGoogleAd } from "../components/user/GoogleAd";
 
 const decodeHTML = (html = "") => {
   if (typeof window === "undefined") return html;
@@ -68,14 +66,13 @@ function ArticleDetailPage() {
         const articleData = await fetchArticleBySlug(baseURL, category, slug);
         setArticle(articleData);
 
-        const articleDataForShare = await fetchArticleBySlugForShare(
-          baseURL,
-          category,
-          slug
-        );
-        console.log(articleDataForShare,"share api worked");
-        
-        setArticleShare(articleDataForShare);
+        // const articleDataForShare = await fetchArticleBySlugForShare(
+        //   baseURL,
+        //   category,
+        //   slug
+        // );
+
+        // setArticleShare(articleDataForShare);
 
         /* ---------- Square Ads ---------- */
         const squareAdsData = await fetchSquareAds(baseURL);
@@ -216,7 +213,7 @@ function ArticleDetailPage() {
         <meta
           name="keywords"
           content={[
-            "news, breaking news, india news, channel h media",
+            "Latest cinema news updates India, Upcoming movie teasers and promos, Exclusive interviews with film stars, Trending entertainment news today, Behind the scenes movie updates, Watch Movie Teasers, Read Cinema News, Subscribe to H Media, Follow Movie Updates, Malayalam Cinema, Mollywood, Kerala Film Industry, New Malayalam Movies, Malayalam Movie Industry, Malayalam Movie Reviews, Mollywood Box Office Collection, Malayalam OTT Release Dates, Friday Release Malayalam, Theatre Response Malayalam Movies",
             normalizeTags(article?.tags),
           ]
             .filter(Boolean)
@@ -293,6 +290,8 @@ function ArticleDetailPage() {
               />
             </div>
 
+            <InlineGoogleAd slot="2236151560" />
+
             {/* CONTENT */}
             <article
               className="article-content w-full text-gray-700 font-mal text-sm sm:text-lg"
@@ -300,6 +299,10 @@ function ArticleDetailPage() {
                 __html: sanitizeHTML(article.content),
               }}
             />
+
+            <InlineGoogleAd slot="6015807995" />
+
+            <InlineGoogleAd slot="7488478241" />
 
             {/* SHARE */}
             <div className="flex justify-end mt-10">
@@ -321,7 +324,8 @@ function ArticleDetailPage() {
           </div>
 
           {/* SIDEBAR */}
-          <aside className="lg:col-span-3 space-y-8 lg:sticky lg:top-24 self-start">
+          <aside className="lg:col-span-3 space-y-8 lg:sticky lg:top-24 self-start lg:mt-9">
+            <InlineGoogleAd slot="9923069891" />
             <AdList ads={squareAds} />
           </aside>
         </div>

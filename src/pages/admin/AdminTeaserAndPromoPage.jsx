@@ -161,11 +161,6 @@ function AdminTeaserAndPromoPage() {
           title: updated.video_title,
           youtubeId: videoId,
           status: updated.status === "active" ? "Active" : "Inactive",
-          date: new Date(updated.published_date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          }),
           date: updated.published_date.split("T")[0],
           thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
         };
