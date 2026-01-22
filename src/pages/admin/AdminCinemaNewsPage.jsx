@@ -5,9 +5,13 @@ import DynamicTable from "../../components/admin/DynamicTable";
 import ConfirmationPopup from "../../components/admin/ConfirmationPopup";
 import AddArticle from "../../components/admin/AddArticle";
 
-
 import { useApi } from "../../context/ApiContext";
-import { deleteCinemaNews, fetchCinemaNews, addCinemaNews, updateCinemaNews } from "../../services/cinemaNewsService";
+import {
+  deleteCinemaNews,
+  fetchCinemaNews,
+  addCinemaNews,
+  updateCinemaNews,
+} from "../../services/cinemaNewsService";
 
 function AdminCinemaNewsPage() {
   const { baseURL } = useApi();
@@ -19,6 +23,7 @@ function AdminCinemaNewsPage() {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [serverError, setServerError] = useState(null);
   const ITEMS_PER_PAGE = 10;
@@ -29,7 +34,7 @@ function AdminCinemaNewsPage() {
     try {
       const data = await fetchCinemaNews(baseURL);
       const sortedData = data.sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
       );
       const final = sortedData.map((item) => ({
         ...item,
@@ -50,11 +55,22 @@ function AdminCinemaNewsPage() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  const filteredNews = newsData.filter((item) =>
+    String(item.slug || "")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase()),
+  );
+
   // Pagination logic
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentNews = newsData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(newsData.length / ITEMS_PER_PAGE);
+  const currentNews = filteredNews.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(filteredNews.length / ITEMS_PER_PAGE);
 
   const handlePageChange = (page) => setCurrentPage(page);
 
@@ -77,9 +93,9 @@ function AdminCinemaNewsPage() {
       }
 
       if (view === "add") {
-        await addCinemaNews(baseURL,form);
+        await addCinemaNews(baseURL, form);
       } else {
-        await updateCinemaNews(baseURL,articleData.id, form);
+        await updateCinemaNews(baseURL, articleData.id, form);
       }
 
       await loadData();
@@ -108,7 +124,7 @@ function AdminCinemaNewsPage() {
     if (!itemToDelete) return;
     setIsDeleting(true);
     try {
-      await deleteCinemaNews(baseURL,itemToDelete.id);
+      await deleteCinemaNews(baseURL, itemToDelete.id);
       await loadData();
       setIsConfirmOpen(false);
       setItemToDelete(null);
@@ -218,7 +234,12 @@ function AdminCinemaNewsPage() {
             </div>
           ) : (
             <>
-              <DynamicTable columns={columns} data={currentNews} />
+              <DynamicTable
+                columns={columns}
+                data={currentNews}
+                searchTerm={searchTerm}
+                onSearch={setSearchTerm}
+              />
               {newsData.length > 0 && (
                 <Pagination
                   currentPage={currentPage}

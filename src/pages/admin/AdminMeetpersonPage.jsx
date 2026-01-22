@@ -26,6 +26,7 @@ function AdminMeetpersonPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [serverError, setServerError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const ITEMS_PER_PAGE = 10;
 
@@ -38,7 +39,7 @@ function AdminMeetpersonPage() {
       const data = await fetchMeetPersons(baseURL);
 
       const sortedData = data.sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
       );
 
       const formatted = sortedData.map((item) => ({
@@ -62,11 +63,22 @@ function AdminMeetpersonPage() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  const filteredList = list.filter((item) =>
+    String(item.slug || "")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase()),
+  );
+
   // Pagination logic
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentList = list.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(list.length / ITEMS_PER_PAGE);
+  const currentList = filteredList.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(filteredList.length / ITEMS_PER_PAGE);
 
   const handlePageChange = (page) => setCurrentPage(page);
 
@@ -92,9 +104,9 @@ function AdminMeetpersonPage() {
 
     try {
       if (view === "add") {
-        await addMeetPerson(baseURL,form);
+        await addMeetPerson(baseURL, form);
       } else {
-        await updateMeetPerson(baseURL,articleData.id, form);
+        await updateMeetPerson(baseURL, articleData.id, form);
       }
 
       await loadData();
@@ -117,7 +129,7 @@ function AdminMeetpersonPage() {
     if (!itemToDelete) return;
     setIsDeleting(true);
     try {
-      await deleteMeetPerson(baseURL,itemToDelete.id);
+      await deleteMeetPerson(baseURL, itemToDelete.id);
       await loadData();
     } catch (err) {
       console.error("Failed to delete item");
@@ -241,13 +253,20 @@ function AdminMeetpersonPage() {
             </div>
           ) : (
             <>
-              <DynamicTable columns={columns} data={currentList} />
-
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
+              <DynamicTable
+                columns={columns}
+                data={currentList}
+                searchTerm={searchTerm}
+                onSearch={setSearchTerm}
               />
+
+              {filteredList.length > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              )}
             </>
           )}
         </>

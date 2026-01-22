@@ -37,6 +37,8 @@ function HomeBannerPage() {
     try {
       const data = (await fetchBanners(baseURL)) || [];
 
+      data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
       const mapped = data.map((b) => ({
         ...b,
         imageUrl:

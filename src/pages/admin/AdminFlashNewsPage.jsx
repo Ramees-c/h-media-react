@@ -195,7 +195,7 @@ function AdminFlashNewsPage() {
         </div>
       ) : (
         <>
-          <DynamicTable columns={columns} data={currentNews} searchAccessor = "title" />
+          <DynamicTable columns={columns} data={currentNews} search={false} />
           {news.length > 0 && (
             <Pagination
               currentPage={currentPage}

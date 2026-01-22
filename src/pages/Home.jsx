@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { useApi } from "../context/ApiContext";
 import { fetchBanners } from "../services/bannerService";
 import Hero from "../components/user/Hero";
@@ -327,8 +329,26 @@ function Home() {
 
           <div className="my-6 lg:my-0">
             <MediaSlider title="More News" items={moreNews} loading={false} />
+            <div className="flex justify-end mt-2">
+              <Link
+                to="/more"
+                className="flex items-center gap-1 text-sm font-bold text-brand-red hover:text-brand-dark transition-colors"
+              >
+                View More <ArrowRight size={16} />
+              </Link>
+            </div>
           </div>
-          <MediaSlider title="Teaser And Promo" video={true} items={teasers} />
+          <div>
+            <MediaSlider title="Teaser And Promo" video={true} items={teasers} />
+            <div className="flex justify-end mt-2">
+              <Link
+                to="/teaserandpromo"
+                className="flex items-center gap-1 text-sm font-bold text-brand-red hover:text-brand-dark transition-colors"
+              >
+                View More <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
         </div>
 
         {/* ================= RIGHT COLUMN (Sidebar 4/12) ================= */}

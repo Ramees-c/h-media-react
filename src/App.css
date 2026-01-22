@@ -208,3 +208,71 @@ body {
   width: 100%;
   min-height: 250px;
 }
+
+/* FORCE ShareThis to NEVER stick to bottom (ALL DEVICES) */
+.sharethis-sticky-share-buttons,
+.st-sticky {
+  top: 50% !important;
+  bottom: auto !important;
+  left: 0 !important;
+  right: auto !important;
+  position: fixed !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: 48px !important;
+  z-index: 9999 !important;
+}
+
+/* Kill bottom variant completely */
+.st-bottom,
+.st-stick-bottom,
+.sharethis-sticky-share-buttons.st-bottom {
+  display: none !important;
+}
+
+
+
+/* Remove the forced padding/margin ShareThis adds to the body */
+body, html {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Hide any invisible "spacer" elements ShareThis creates at the bottom */
+.st-sticky-share-buttons.st-bottom,
+#st-el-1.st-bottom,
+.st-spacer {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Ensure the vertical bar on the left doesn't create scrollbars */
+.sharethis-sticky-share-buttons {
+  overflow: visible !important;
+}
+
+
+/* Smaller ShareThis buttons on MOBILE */
+@media (max-width: 768px) {
+  .sharethis-sticky-share-buttons,
+  .st-sticky {
+    width: 30px !important; 
+  }
+
+  .st-sticky .st-btn {
+    width: 30px !important;
+    height: 30px !important;
+    padding: 1px !important;
+  }
+
+  .st-sticky .st-btn svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .st-sticky .st-label {
+    display: none !important;
+  }
+}

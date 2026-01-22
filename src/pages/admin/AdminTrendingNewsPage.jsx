@@ -25,6 +25,8 @@ function AdminTrendingNewsPage() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  
 
   const loadData = async () => {
     if (!baseURL) return;
@@ -56,12 +58,23 @@ function AdminTrendingNewsPage() {
     loadData();
   }, [baseURL]);
 
+  const filteredData = data.filter((item) =>
+  String(item.slug || "")
+    .toLowerCase()
+    .includes(searchTerm.toLowerCase())
+);
+
   // Pagination Logic
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-  const currentData = data.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+const currentData = filteredData.slice(
+  (currentPage - 1) * itemsPerPage,
+  currentPage * itemsPerPage
+);
+
+useEffect(() => {
+  setCurrentPage(1);
+}, [searchTerm]);
 
   const handleDeleteClick = (item) => {
     setSelectedItem(item);
@@ -157,7 +170,12 @@ function AdminTrendingNewsPage() {
         </div>
       ) : (
         <>
-          <DynamicTable columns={columns} data={currentData} />
+         <DynamicTable
+  columns={columns}
+  data={currentData}
+  searchTerm={searchTerm}
+  onSearch={setSearchTerm}
+/>
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

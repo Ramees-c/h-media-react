@@ -23,6 +23,7 @@ function AdminMoreNewsPage() {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [serverError, setServerError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const ITEMS_PER_PAGE = 10;
 
@@ -34,7 +35,7 @@ function AdminMoreNewsPage() {
     try {
       const data = await fetchMoreNews(baseURL);
       const sortedData = data.sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
       );
 
       const formatted = sortedData.map((item) => ({
@@ -57,13 +58,26 @@ function AdminMoreNewsPage() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  const filteredList = list.filter((item) =>
+    [item.title, item.slug].some((val) =>
+      String(val || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()),
+    ),
+  );
+
   // --------------------------
   // PAGINATION
   // --------------------------
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentItems = list.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(list.length / ITEMS_PER_PAGE);
+  const currentItems = filteredList.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(filteredList.length / ITEMS_PER_PAGE);
 
   const handlePageChange = (page) => setCurrentPage(page);
 
@@ -231,7 +245,13 @@ function AdminMoreNewsPage() {
             </div>
           ) : (
             <>
-              <DynamicTable columns={columns} data={currentItems} />
+              <DynamicTable
+                columns={columns}
+                data={currentItems}
+                searchTerm={searchTerm}
+                onSearch={setSearchTerm}
+              />
+
               {list.length > 0 && (
                 <Pagination
                   currentPage={currentPage}

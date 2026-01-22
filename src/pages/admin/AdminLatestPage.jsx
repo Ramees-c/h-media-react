@@ -24,6 +24,7 @@ function AdminLatestPage() {
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [serverError, setServerError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const ITEMS_PER_PAGE = 10;
 
   // ---------------- FETCH DATA ----------------
@@ -32,7 +33,7 @@ function AdminLatestPage() {
     try {
       const data = await fetchLatestNews(baseURL);
       const sortedData = data.sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
       );
 
       const final = sortedData.map((item) => ({
@@ -55,11 +56,23 @@ function AdminLatestPage() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  const filteredNews = newsData.filter((item) =>
+    String(item.slug || "")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase()),
+  );
+
   // ---------------- PAGINATION ----------------
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentNews = newsData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(newsData.length / ITEMS_PER_PAGE);
+
+  const currentNews = filteredNews.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(filteredNews.length / ITEMS_PER_PAGE);
   const handlePageChange = (page) => setCurrentPage(page);
 
   // ---------------- ADD / EDIT ----------------
@@ -219,7 +232,12 @@ function AdminLatestPage() {
             </div>
           ) : (
             <>
-              <DynamicTable columns={columns} data={currentNews} />
+              <DynamicTable
+                columns={columns}
+                data={currentNews}
+                searchTerm={searchTerm}
+                onSearch={setSearchTerm}
+              />
               {newsData.length > 0 && (
                 <Pagination
                   currentPage={currentPage}

@@ -2,23 +2,20 @@ import { Inbox, Search } from "lucide-react";
 import { useState } from "react";
 
 export default function DynamicTable({
-  columns,
+ columns,
   data,
   uniqueKeyAccessor = "id",
-  searchAccessor = "slug",
   search = true,
+  searchTerm,
+  onSearch,
+  searchAccessor = "slug",
 }) {
   const [popupImage, setPopupImage] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
   if (!columns || !data) {
     return <p>Table configuration or data is missing.</p>;
   }
 
-  const filteredData = data.filter((row) =>
-    String(row[searchAccessor] || "")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
+  
 
   return (
     <div className="bg-white shadow-sm rounded-lg overflow-x-auto">
@@ -34,8 +31,8 @@ export default function DynamicTable({
               <input
                 type="text"
                 placeholder={`Search by ${searchAccessor}...`}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+               value={searchTerm}
+onChange={(e) => onSearch(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-brand-red"
               />
             </div>
@@ -57,8 +54,8 @@ export default function DynamicTable({
           </tr>
         </thead>
         <tbody>
-          {filteredData.length > 0 ? (
-            filteredData.map((row, index) => (
+          {data.length > 0 ? (
+           data.map((row, index) => (
               <tr
                 key={row[uniqueKeyAccessor]}
                 className="bg-white border-b border-gray-200 hover:bg-gray-50 last:border-b-0"

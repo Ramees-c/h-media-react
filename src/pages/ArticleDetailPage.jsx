@@ -14,6 +14,7 @@ import FullWidthAd from "../components/user/FullWidthAd";
 import ShareButtons from "../components/user/ShareButtons";
 import CustomLoader from "../components/user/CustomLoader";
 import { InlineGoogleAd } from "../components/user/GoogleAd";
+import ShareThisInline from "../components/user/ShareThisInline";
 
 const decodeHTML = (html = "") => {
   if (typeof window === "undefined") return html;
@@ -81,7 +82,7 @@ function ArticleDetailPage() {
             .filter(
               (ad) =>
                 ad.status === true &&
-                ad.page_type?.toLowerCase() === "news detail"
+                ad.page_type?.toLowerCase() === "news detail",
             )
             .sort((a, b) => a.order - b.order)
             .slice(0, 3)
@@ -90,7 +91,7 @@ function ArticleDetailPage() {
               link: ad.link || "#",
               showContact: ad.show_contact,
               title: ad.title,
-            }))
+            })),
         );
 
         /* ---------- Banner Ads ---------- */
@@ -100,7 +101,7 @@ function ArticleDetailPage() {
             .filter(
               (ad) =>
                 ad.status === true &&
-                ad.page_type?.toLowerCase() === "news detail"
+                ad.page_type?.toLowerCase() === "news detail",
             )
             .sort((a, b) => a.order - b.order)
             .slice(0, 5)
@@ -109,7 +110,7 @@ function ArticleDetailPage() {
               link: ad.link,
               showContact: ad.show_contact,
               title: ad.title,
-            }))
+            })),
         );
       } catch (error) {
         console.error("Article detail error");
@@ -283,7 +284,7 @@ function ArticleDetailPage() {
               <img
                 src={`${baseURL.replace(/\/$/, "")}/${article.image.replace(
                   /^\//,
-                  ""
+                  "",
                 )}`}
                 alt={article.title}
                 className="w-full h-full object-cover"
@@ -330,6 +331,16 @@ function ArticleDetailPage() {
           </aside>
         </div>
       </main>
+
+      <div>
+        <ShareThisInline
+          title={article.title}
+          description={truncate(stripHTML(article?.content || ""), 120)}
+          image={`${baseURL.replace(/\/$/, "")}/${article.image
+            .replace(/^\//, "")
+            .replace(/\\/g, "/")}`}
+        />
+      </div>
     </>
   );
 }
