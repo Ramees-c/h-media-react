@@ -287,7 +287,7 @@ function ArticleDetailPage() {
                   "",
                 )}`}
                 alt={article.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-fill"
               />
             </div>
 

@@ -4,7 +4,7 @@ import {
   fetchBannerAds,
   fetchSquareAds,
 } from "../services/advertisementService";
-import { fetchLatestNews } from "../services/latestNewsService";
+import { fetchLatestNews, fetchLatestNewsPaginated } from "../services/latestNewsService";
 import ArticleCard from "../components/user/ArticleCard";
 import NewsPagination from "../components/user/NewsPagination";
 import FullWidthAd from "../components/user/FullWidthAd";
@@ -23,8 +23,10 @@ function LatestNewsPage() {
   const [bannerAds, setBannerAds] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [total, setTotal] = useState(0);
+  const [limit, setLimit] = useState(12);
+
   const currentPage = Number(searchParams.get("page")) || 1;
-  const itemsPerPage = 12;
 
   useEffect(() => {
     const loadData = async () => {
@@ -32,17 +34,21 @@ function LatestNewsPage() {
 
       try {
         // Fetch latest news
-        const newsData = await fetchLatestNews(baseURL);
-        newsData.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        const paginatedData = await fetchLatestNewsPaginated(
+          baseURL,
+          currentPage,
+          limit,
         );
-        setLatestNews(newsData);
+
+        setLatestNews(paginatedData.items);
+        setTotal(paginatedData.total);
+        setLimit(paginatedData.limit);
 
         // Fetch square ads
         const squareData = await fetchSquareAds(baseURL);
         const filteredSquareAds = squareData
           .filter(
-            (ad) => ad.status && ad.page_type?.toLowerCase() === "latest news"
+            (ad) => ad.status && ad.page_type?.toLowerCase() === "latest news",
           )
           .sort((a, b) => a.order - b.order)
           .slice(0, 3)
@@ -58,7 +64,7 @@ function LatestNewsPage() {
         const bannerData = await fetchBannerAds(baseURL);
         const filteredBannerAds = bannerData
           .filter(
-            (ad) => ad.status && ad.page_type?.toLowerCase() === "latest news"
+            (ad) => ad.status && ad.page_type?.toLowerCase() === "latest news",
           )
           .sort((a, b) => a.order - b.order)
           .slice(0, 5)
@@ -75,9 +81,8 @@ function LatestNewsPage() {
         setLoading(false);
       }
     };
-
     loadData();
-  }, [baseURL]);
+  }, [baseURL, currentPage, limit]);
 
   useEffect(() => {
     window.scrollTo({
@@ -86,14 +91,7 @@ function LatestNewsPage() {
     });
   }, [searchParams]);
 
-  const totalPages = Math.ceil(latestNews.length / itemsPerPage);
-  const safeCurrentPage = Math.max(1, Math.min(currentPage, totalPages));
-  const startIndex = (safeCurrentPage - 1) * itemsPerPage;
-  const currentArticles = latestNews.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
-
+  const totalPages = Math.ceil(total / limit);
   if (loading)
     return (
       <>
@@ -112,7 +110,7 @@ function LatestNewsPage() {
           <InlineGoogleAd slot="2236151560" />
 
           <div className="grid md:grid-cols-3 gap-3">
-            {currentArticles.map((article) => (
+            {latestNews.map((article) => (
               <ArticleCard
                 key={article.id}
                 category="news"
@@ -127,10 +125,7 @@ function LatestNewsPage() {
 
           <InlineGoogleAd slot="7488478241" />
 
-          <NewsPagination
-            currentPage={safeCurrentPage}
-            totalPages={totalPages}
-          />
+          <NewsPagination currentPage={currentPage} totalPages={totalPages} />
 
           <FullWidthAd ads={bannerAds} />
         </div>

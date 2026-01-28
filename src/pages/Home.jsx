@@ -2,24 +2,40 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useApi } from "../context/ApiContext";
-import { fetchBanners } from "../services/bannerService";
+import { fetchBanners, fetchBannersHome } from "../services/bannerService";
 import Hero from "../components/user/Hero";
-import { fetchTrendingNews } from "../services/trendingNewsService";
+import {
+  fetchTrendingNews,
+  fetchTrendingNewsLimit,
+} from "../services/trendingNewsService";
 import NewsColumn from "../components/user/NewsColumn";
-import { fetchMoreNews } from "../services/moreNewsService";
-import { fetchTeasers } from "../services/teaserPromoService";
+import { fetchMoreNews, fetchMoreNewsLimit } from "../services/moreNewsService";
+import {
+  fetchTeasers,
+  fetchTeasersLimit,
+} from "../services/teaserPromoService";
 import {
   fetchBannerAds,
   fetchSquareAds,
 } from "../services/advertisementService";
-import { fetchLatestNews } from "../services/latestNewsService";
-import { fetchCinemaNews } from "../services/cinemaNewsService";
-import { fetchMeetPersons } from "../services/meetPersonService";
+import {
+  fetchLatestNews,
+  fetchLatestNewsLimit,
+} from "../services/latestNewsService";
+import {
+  fetchCinemaNews,
+  fetchCinemaNewsLimit,
+} from "../services/cinemaNewsService";
+import {
+  fetchMeetPersons,
+  fetchMeetPersonsLimit,
+} from "../services/meetPersonService";
 import FullWidthAd from "../components/user/FullWidthAd";
 import AdList from "../components/user/AdList";
 import MediaSlider from "../components/user/MediaSlider";
 import CustomLoader from "../components/user/CustomLoader";
 import { InlineGoogleAd } from "../components/user/GoogleAd";
+import VideoVerticalSlider from "../components/user/VideoVerticalSlider";
 
 const getYouTubeId = (url) => {
   if (!url) return null;
@@ -64,136 +80,171 @@ function Home() {
       const promises = [];
 
       /* -------- Latest News -------- */
+      // promises.push(
+      //   fetchLatestNews(baseURL)
+      //     .then((latestData) => {
+      //       latestData.sort(
+      //         (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      //       );
+      //       setLatestNews(
+      //         latestData.slice(0, 5).map((item) => ({
+      //           title: item.title,
+      //           image: `${baseURL}/${item.image.replace(/\\/g, "/")}`,
+      //           date: item.date,
+      //           slug: item.slug,
+      //           content: item.content,
+      //         }))
+      //       );
+      //     })
+      //     .catch((err) => console.error("Latest News Error"))
+      //     .finally(() => setLoadingLatest(false))
+      // );
+
       promises.push(
-        fetchLatestNews(baseURL)
+        fetchLatestNewsLimit(baseURL)
           .then((latestData) => {
-            latestData.sort(
-              (a, b) => new Date(b.created_at) - new Date(a.created_at)
-            );
             setLatestNews(
-              latestData.slice(0, 5).map((item) => ({
+              latestData.map((item) => ({
                 title: item.title,
                 image: `${baseURL}/${item.image.replace(/\\/g, "/")}`,
                 date: item.date,
                 slug: item.slug,
                 content: item.content,
-              }))
+              })),
             );
           })
-          .catch((err) => console.error("Latest News Error"))
-          .finally(() => setLoadingLatest(false))
+          .catch(() => console.error("Latest News Error"))
+          .finally(() => setLoadingLatest(false)),
       );
-
       /* -------- Trending News -------- */
+      // promises.push(
+      //   fetchTrendingNews(baseURL)
+      //     .then((trendingData) => {
+      //       trendingData.sort(
+      //         (a, b) => new Date(b.created_at) - new Date(a.created_at),
+      //       );
+      //       setTrendingNews(
+      //         trendingData.slice(0, 4).map((item) => ({
+      //           title: item.title,
+      //           image: safeImage(baseURL, item.image),
+      //           date: item.date,
+      //           slug: item.slug,
+      //           content: item.content,
+      //         })),
+      //       );
+      //     })
+      //     .catch((err) => console.error("Trending News Error"))
+      //     .finally(() => setLoadingTrending(false)),
+      // );
+
       promises.push(
-        fetchTrendingNews(baseURL)
+        fetchTrendingNewsLimit(baseURL)
           .then((trendingData) => {
-            trendingData.sort(
-              (a, b) => new Date(b.created_at) - new Date(a.created_at)
-            );
             setTrendingNews(
-              trendingData.slice(0, 4).map((item) => ({
+              trendingData.map((item) => ({
                 title: item.title,
-                image: safeImage(baseURL, item.image),
+                image: `${baseURL}/${item.image.replace(/\\/g, "/")}`,
                 date: item.date,
                 slug: item.slug,
                 content: item.content,
-              }))
+              })),
             );
           })
-          .catch((err) => console.error("Trending News Error"))
-          .finally(() => setLoadingTrending(false))
+          .catch(() => console.error("Trending News Error"))
+          .finally(() => setLoadingTrending(false)),
       );
 
       /* -------- Cinema News -------- */
       promises.push(
-        fetchCinemaNews(baseURL)
+        fetchCinemaNewsLimit(baseURL)
           .then((cinemaData) => {
-            cinemaData.sort(
-              (a, b) => new Date(b.created_at) - new Date(a.created_at)
-            );
             setCinemaNews(
-              cinemaData.slice(0, 5).map((item) => ({
+              cinemaData.map((item) => ({
                 title: item.title,
                 image: `${baseURL}/${item.image.replace(/\\/g, "/")}`,
                 date: item.date,
                 slug: item.slug,
                 content: item.content,
-              }))
+              })),
             );
           })
           .catch((err) => console.error("Cinema News Error"))
-          .finally(() => setLoadingCinema(false))
+          .finally(() => setLoadingCinema(false)),
       );
 
       /* -------- Meet The Person -------- */
       promises.push(
-        fetchMeetPersons(baseURL)
+        fetchMeetPersonsLimit(baseURL)
           .then((meetData) => {
-            meetData.sort(
-              (a, b) => new Date(b.created_at) - new Date(a.created_at)
-            );
             setMeetThePerson(
-              meetData.slice(0, 10).map((item) => ({
+              meetData.map((item) => ({
                 title: item.title,
                 image: `${baseURL}/${item.image.replace(/\\/g, "/")}`,
                 date: item.date,
                 slug: item.slug,
                 content: item.content,
-              }))
+              })),
             );
           })
           .catch((err) => console.error("Meet Person Error"))
-          .finally(() => setLoadingMeet(false))
+          .finally(() => setLoadingMeet(false)),
       );
 
       /* -------- More News -------- */
+      // promises.push(
+      //   fetchMoreNews(baseURL)
+      //     .then((moreData) => {
+      //       moreData.sort(
+      //         (a, b) => new Date(b.created_at) - new Date(a.created_at),
+      //       );
+      //       setMoreNews(
+      //         moreData.slice(0, 10).map((item) => ({
+      //           title: item.title,
+      //           image: `${baseURL}/${item.image.replace(/\\/g, "/")}`,
+      //           date: item.date,
+      //           slug: item.slug,
+      //           content: item.content,
+      //         })),
+      //       );
+      //     })
+      //     .catch((err) => console.error("More News Error")),
+      // );
+
       promises.push(
-        fetchMoreNews(baseURL)
-          .then((moreData) => {
-            moreData.sort(
-              (a, b) => new Date(b.created_at) - new Date(a.created_at)
-            );
+        fetchMoreNewsLimit(baseURL)
+          .then((moreNewsData) => {
             setMoreNews(
-              moreData.slice(0, 10).map((item) => ({
+              moreNewsData.map((item) => ({
                 title: item.title,
                 image: `${baseURL}/${item.image.replace(/\\/g, "/")}`,
                 date: item.date,
                 slug: item.slug,
                 content: item.content,
-              }))
+              })),
             );
           })
-          .catch((err) => console.error("More News Error"))
+          .catch(() => console.error("More News trending Error")),
       );
 
       /* -------- Banners -------- */
       promises.push(
-        fetchBanners(baseURL)
+        fetchBannersHome(baseURL)
           .then((bannerData) => {
-            bannerData.sort(
-              (a, b) => new Date(b.created_at) - new Date(a.created_at)
-            );
             setBanners(
               bannerData.map((item) => ({
                 image: `${baseURL}/${item.image.replace(/\\/g, "/")}`,
-              }))
+              })),
             );
           })
-          .catch((err) => console.error("Banners Error"))
+          .catch((err) => console.error("Banners Error")),
       );
 
       /* -------- Teasers -------- */
       promises.push(
-        fetchTeasers(baseURL)
+        fetchTeasersLimit(baseURL)
           .then((teaserData) => {
-            const activeTeasers = teaserData
-              .filter((t) => t.active_inactive)
-              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-              .slice(0, 10);
-
             setTeasers(
-              activeTeasers.map((item) => {
+              teaserData.map((item) => {
                 const videoId = getYouTubeId(item.video_url);
                 return {
                   title: item.video_title,
@@ -204,10 +255,10 @@ function Home() {
                   date: item.published_date,
                   slug: "#",
                 };
-              })
+              }),
             );
           })
-          .catch((err) => console.error("Teasers Error"))
+          .catch((err) => console.error("Teasers Error")),
       );
 
       /* -------- Ads -------- */
@@ -218,7 +269,8 @@ function Home() {
               squareAdsData
                 .filter(
                   (ad) =>
-                    ad.status === true && ad.page_type?.toLowerCase() === "home"
+                    ad.status === true &&
+                    ad.page_type?.toLowerCase() === "home",
                 )
                 .sort((a, b) => a.order - b.order)
                 .slice(0, 3)
@@ -227,10 +279,10 @@ function Home() {
                   link: ad.link || "#",
                   showContact: ad.show_contact,
                   title: ad.title,
-                }))
+                })),
             );
           })
-          .catch((err) => console.error("Square Ads Error"))
+          .catch((err) => console.error("Square Ads Error")),
       );
 
       promises.push(
@@ -240,7 +292,8 @@ function Home() {
               bannerAdsData
                 .filter(
                   (ad) =>
-                    ad.status === true && ad.page_type?.toLowerCase() === "home"
+                    ad.status === true &&
+                    ad.page_type?.toLowerCase() === "home",
                 )
                 .sort((a, b) => a.order - b.order)
                 .slice(0, 5)
@@ -249,10 +302,10 @@ function Home() {
                   link: ad.link,
                   showContact: ad.show_contact,
                   title: ad.title,
-                }))
+                })),
             );
           })
-          .catch((err) => console.error("Banner Ads Error"))
+          .catch((err) => console.error("Banner Ads Error")),
       );
 
       await Promise.all(promises);
@@ -277,15 +330,24 @@ function Home() {
             <Hero banners={banners} />
           </div>
 
-          {/* TRENDING */}
-          <div className="mt-6 xl:mt-0">
-            <NewsColumn
+          <div className="mt-6 xl:mt-0 hidden xl:block">
+            {/* <NewsColumn
               title="TRENDING NEWS"
               items={trendingNews}
               trending={true}
               loading={loadingTrending}
               category="trending-news"
-            />
+            /> */}
+
+            <div>
+              <VideoVerticalSlider
+                title="Trailers And Previews"
+                items={teasers}
+                autoSlide={true}
+                delay={2500}
+                loading={loading}
+              />
+            </div>
           </div>
           <InlineGoogleAd slot="9731498203" />
         </div>
@@ -293,7 +355,7 @@ function Home() {
         {/* ---------- Horizontal Ad under Banner & Trending ---------- */}
         <InlineGoogleAd slot="2236151560" />
       </section>
-      <section className="w-full lg:py-12">
+      <section className="w-full">
         <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           <div className="mb-6 xl:mb-0">
             <NewsColumn
@@ -325,9 +387,32 @@ function Home() {
         {/* ================= LEFT COLUMN (Content 8/12) ================= */}
         <div className="lg:col-span-9 flex flex-col gap-5">
           <InlineGoogleAd slot="7488478241" />
+          <div className="xl:hidden my-5">
+            <MediaSlider
+              title="Trailers And Previews"
+              video={true}
+              items={teasers}
+            />
+            <div className="flex justify-end mt-2">
+              <Link
+                to="/teaserandpromo"
+                className="flex items-center gap-1 text-sm font-bold text-brand-red hover:text-brand-dark transition-colors"
+              >
+                View More <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
           {bannerAds && <FullWidthAd ads={bannerAds} />}
 
           <div className="my-6 lg:my-0">
+            <div className="mb-6">
+              <MediaSlider
+                title="TRENDING NEWS"
+                items={trendingNews}
+                loading={false}
+                trending={true}
+              />
+            </div>
             <MediaSlider title="More News" items={moreNews} loading={false} />
             <div className="flex justify-end mt-2">
               <Link
@@ -338,8 +423,12 @@ function Home() {
               </Link>
             </div>
           </div>
-          <div>
-            <MediaSlider title="Teaser And Promo" video={true} items={teasers} />
+          {/* <div>
+            <MediaSlider
+              title="Teaser And Promo"
+              video={true}
+              items={teasers}
+            />
             <div className="flex justify-end mt-2">
               <Link
                 to="/teaserandpromo"
@@ -348,7 +437,7 @@ function Home() {
                 View More <ArrowRight size={16} />
               </Link>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* ================= RIGHT COLUMN (Sidebar 4/12) ================= */}

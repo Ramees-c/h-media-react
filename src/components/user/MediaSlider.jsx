@@ -39,6 +39,7 @@ export default function MediaSlider({
   items,
   video = false,
   loading = false,
+  trending = false,
 }) {
   const [selectedVideo, setSelectedVideo] = useState(null);
 
@@ -100,7 +101,7 @@ export default function MediaSlider({
           spaceBetween={7}
           slidesPerView={"auto"}
           loop={items.length > 4}
-         freeMode={{ enabled: true, momentum: false }}
+          freeMode={{ enabled: true, momentum: false }}
           speed={4000}
           autoplay={{
             delay: 0,
@@ -140,7 +141,11 @@ export default function MediaSlider({
               ) : (
                 /* NORMAL CARD → WITH LINK */
                 <Link
-                  to={`/more-news/${item.slug}`}
+                  to={
+                    trending
+                      ? `/trending-news/${item.slug}`
+                      : `/more-news/${item.slug}`
+                  }
                   onClick={handleLinkClick}
                   className="group flex flex-col mb-3"
                 >

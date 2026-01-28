@@ -4,6 +4,17 @@ export async function fetchTeasers(baseURL) {
   return await res.json();
 }
 
+export const fetchTeasersLimit = async (baseURL) => {
+  try {
+    const res = await fetch(`${baseURL}/teaser-and-promo/limit`);
+    if (!res.ok) throw new Error("Failed to load teasers limit");
+    return await res.json();
+  } catch (err) {
+    console.error("Failed to load teasers limit");
+    return [];
+  }
+};
+
 export async function addTeaser(baseURL, data) {
   const token = localStorage.getItem("access_token");
   const form = new FormData();
@@ -61,3 +72,30 @@ export async function deleteTeaser(baseURL, id) {
   if (!res.ok) throw new Error(out.detail || "Failed to delete teaser");
   return out;
 }
+
+
+export const fetchTeasersPaginated = async (
+  baseURL,
+  page = 1
+) => {
+  try {
+    const res = await fetch(
+      `${baseURL}/teaser-and-promo/paginate?page=${page}`
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch paginated teasers");
+    }
+
+    return await res.json(); 
+    // { page, limit, total, items }
+  } catch (err) {
+    console.error("Error fetching paginated teasers");
+    return {
+      page: 1,
+      limit: 12,
+      total: 0,
+      items: [],
+    };
+  }
+};

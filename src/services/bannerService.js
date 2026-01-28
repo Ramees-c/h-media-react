@@ -4,6 +4,12 @@ export async function fetchBanners(baseURL) {
   return await res.json();
 }
 
+export async function fetchBannersHome(baseURL) {
+  const res = await fetch(`${baseURL}/banner/homepage`);
+  if (!res.ok) throw new Error("Failed to load home banners");
+  return await res.json();
+}
+
 export async function addBanner(baseURL,data) {
    const token = localStorage.getItem("access_token");
   const res = await fetch(`${baseURL}/admin/banner`, {

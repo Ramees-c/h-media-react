@@ -16,7 +16,7 @@ const navLinks = [
   { name: "Latest News", href: "/latestnews" },
   { name: "Cinema News", href: "/cinemanews" },
   { name: "Meet The Person", href: "/meettheperson" },
-  { name: "Teaser And Promo", href: "/teaserandpromo" },
+  { name: "Trailers And Previews", href: "/teaserandpromo" },
   { name: "More News", href: "/more" },
 ];
 

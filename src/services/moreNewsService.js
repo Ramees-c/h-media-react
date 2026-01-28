@@ -4,6 +4,18 @@ export async function fetchMoreNews(baseURL) {
   return await res.json();
 }
 
+
+export const fetchMoreNewsLimit = async (baseURL) => {
+  try {
+    const res = await fetch(`${baseURL}/more-news/limit`);
+    if (!res.ok) throw new Error("Failed to fetch more news limit");
+    return await res.json();
+  } catch (err) {
+    console.error("Error fetching trending more limit");
+    return [];
+  }
+};
+
 export async function addMoreNews(baseURL,data) {
    const token = localStorage.getItem("access_token");
   const res = await fetch(`${baseURL}/admin/more-news/`, {
@@ -53,3 +65,28 @@ export async function deleteMoreNews(baseURL,id) {
 
 
 
+export const fetchMoreNewsPaginated = async (
+  baseURL,
+  page = 1
+) => {
+  try {
+    const res = await fetch(
+      `${baseURL}/more-news/paginate?page=${page}`
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch paginated more news");
+    }
+
+    return await res.json(); 
+    // { page, limit, total, items }
+  } catch (err) {
+    console.error("Error fetching paginated more news");
+    return {
+      page: 1,
+      limit: 12,
+      total: 0,
+      items: [],
+    };
+  }
+};

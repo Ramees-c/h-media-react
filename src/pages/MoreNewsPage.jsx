@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useApi } from "../context/ApiContext";
-import { fetchMoreNews } from "../services/moreNewsService";
+import {
+  fetchMoreNews,
+  fetchMoreNewsPaginated,
+} from "../services/moreNewsService";
 import {
   fetchBannerAds,
   fetchSquareAds,
@@ -18,12 +21,14 @@ function MoreNewsPage() {
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
-  const itemsPerPage = 12;
 
   const [articles, setArticles] = useState([]);
   const [squareAds, setSquareAds] = useState([]);
   const [bannerAds, setBannerAds] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [total, setTotal] = useState(0);
+  const [limit, setLimit] = useState(12);
 
   useEffect(() => {
     const loadData = async () => {
@@ -31,18 +36,22 @@ function MoreNewsPage() {
         setLoading(true);
 
         /* ----------------- NEWS ----------------- */
-        const moreNews = await fetchMoreNews(baseURL);
-        moreNews.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        const moreNews = await fetchMoreNewsPaginated(
+          baseURL,
+          currentPage,
+          limit,
         );
-        setArticles(moreNews);
+
+        setArticles(moreNews.items);
+        setTotal(moreNews.total);
+        setLimit(moreNews.limit);
 
         /* ----------------- SQUARE ADS ----------------- */
         const squareAdsData = await fetchSquareAds(baseURL);
         const filteredSquareAds = squareAdsData
           .filter(
             (ad) =>
-              ad.status === true && ad.page_type?.toLowerCase() === "more news"
+              ad.status === true && ad.page_type?.toLowerCase() === "more news",
           )
           .sort((a, b) => a.order - b.order)
           .slice(0, 3)
@@ -59,7 +68,7 @@ function MoreNewsPage() {
         const filteredBannerAds = bannerAdsData
           .filter(
             (ad) =>
-              ad.status === true && ad.page_type?.toLowerCase() === "more news"
+              ad.status === true && ad.page_type?.toLowerCase() === "more news",
           )
           .sort((a, b) => a.order - b.order)
           .slice(0, 5)
@@ -75,26 +84,22 @@ function MoreNewsPage() {
       } finally {
         setLoading(false);
       }
-      
     };
 
     loadData();
-  }, [baseURL]);
+  }, [baseURL, currentPage, limit]);
 
   /* ----------------- PAGINATION ----------------- */
-  const totalPages = Math.ceil(articles.length / itemsPerPage);
-  const safeCurrentPage = Math.max(1, Math.min(currentPage, totalPages));
-  const startIndex = (safeCurrentPage - 1) * itemsPerPage;
-  const currentArticles = articles.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(total / limit);
 
-   useEffect(() => {
+  useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [safeCurrentPage]);
+  }, [currentPage]);
 
   if (loading) {
     return (
       <>
-      <CustomLoader />
+        <CustomLoader />
       </>
     );
   }
@@ -114,7 +119,7 @@ function MoreNewsPage() {
 
           <div className="grid md:grid-cols-3 gap-3">
             {/* Map through the sample data to display the articles */}
-            {currentArticles.map((article) => (
+            {articles.map((article) => (
               <ArticleCard
                 key={article.id}
                 category="more-news"
@@ -129,7 +134,7 @@ function MoreNewsPage() {
 
           <InlineGoogleAd slot="7488478241" />
           <NewsPagination
-            currentPage={safeCurrentPage}
+            currentPage={currentPage}
             totalPages={totalPages}
           />
           <FullWidthAd ads={bannerAds} />

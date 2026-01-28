@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useApi } from "../context/ApiContext";
-import { fetchMeetPersons } from "../services/meetPersonService";
+import {
+  fetchMeetPersonPaginated,
+  fetchMeetPersons,
+} from "../services/meetPersonService";
 import {
   fetchBannerAds,
   fetchSquareAds,
@@ -22,8 +25,10 @@ function MeetThePersonPage() {
   const [bannerAds, setBannerAds] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [total, setTotal] = useState(0);
+  const [limit, setLimit] = useState(12);
+
   const currentPage = Number(searchParams.get("page")) || 1;
-  const itemsPerPage = 12;
 
   useEffect(() => {
     const loadData = async () => {
@@ -31,16 +36,22 @@ function MeetThePersonPage() {
 
       try {
         // Fetch meet the person articles
-        const data = await fetchMeetPersons(baseURL);
-        data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        setMeetPersons(data);
+        const data = await fetchMeetPersonPaginated(
+          baseURL,
+          currentPage,
+          limit,
+        );
+       
+        setMeetPersons(data.items);
+        setTotal(data.total);
+        setLimit(data.limit);
 
         // Fetch square ads
         const squareData = await fetchSquareAds(baseURL);
         const filteredSquareAds = squareData
           .filter(
             (ad) =>
-              ad.status && ad.page_type?.toLowerCase() === "meet the person"
+              ad.status && ad.page_type?.toLowerCase() === "meet the person",
           )
           .sort((a, b) => a.order - b.order)
           .slice(0, 3)
@@ -57,7 +68,7 @@ function MeetThePersonPage() {
         const filteredBannerAds = bannerData
           .filter(
             (ad) =>
-              ad.status && ad.page_type?.toLowerCase() === "meet the person"
+              ad.status && ad.page_type?.toLowerCase() === "meet the person",
           )
           .sort((a, b) => a.order - b.order)
           .slice(0, 5)
@@ -76,7 +87,7 @@ function MeetThePersonPage() {
     };
 
     loadData();
-  }, [baseURL]);
+  }, [baseURL, currentPage, limit]);
 
   useEffect(() => {
     window.scrollTo({
@@ -85,13 +96,7 @@ function MeetThePersonPage() {
     });
   }, [searchParams]);
 
-  const totalPages = Math.ceil(meetPersons.length / itemsPerPage);
-  const safeCurrentPage = Math.max(1, Math.min(currentPage, totalPages));
-  const startIndex = (safeCurrentPage - 1) * itemsPerPage;
-  const currentArticles = meetPersons.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const totalPages = Math.ceil(total / limit);
 
   if (loading)
     return (
@@ -115,7 +120,7 @@ function MeetThePersonPage() {
 
           <div className="grid md:grid-cols-3 gap-3">
             {/* Map through the sample data to display the articles */}
-            {currentArticles.map((article) => (
+            {meetPersons.map((article) => (
               <ArticleCard
                 key={article.id}
                 category="meet-person"
@@ -128,10 +133,10 @@ function MeetThePersonPage() {
             ))}
           </div>
 
-           <InlineGoogleAd slot="7488478241" />
+          <InlineGoogleAd slot="7488478241" />
 
           <NewsPagination
-            currentPage={safeCurrentPage}
+            currentPage={currentPage}
             totalPages={totalPages}
           />
 
@@ -139,7 +144,7 @@ function MeetThePersonPage() {
         </div>
 
         <aside className="lg:col-span-3 space-y-8 lg:sticky lg:top-24 self-start lg:mt-9">
-           <InlineGoogleAd slot="9923069891" />
+          <InlineGoogleAd slot="9923069891" />
           <AdList ads={squareAds} />
         </aside>
       </div>

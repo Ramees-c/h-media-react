@@ -46,7 +46,7 @@ function App() {
     <>
       {/* DEFAULT / STATIC META */}
       <Helmet>
-        <title>CHANNEL HMEDIA | THE COMPLETE FILIM MAGAZINE</title>
+        <title>CHANNEL HMEDIA | THE COMPLETE FILM MAGAZINE</title>
         <meta
           name="description"
           content="Get the latest scoop on the film industry with HMEDIA. Your source for cinema news, celebrity interviews, official teasers, and promotional videos."

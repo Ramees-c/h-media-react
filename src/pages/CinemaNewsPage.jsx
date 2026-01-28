@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useApi } from "../context/ApiContext";
-import { fetchCinemaNews } from "../services/cinemaNewsService";
+import {
+  fetchCinemaNews,
+  fetchCinemaNewsPaginated,
+} from "../services/cinemaNewsService";
 import {
   fetchBannerAds,
   fetchSquareAds,
@@ -23,8 +26,10 @@ function CinemaNewsPage() {
   const [bannerAds, setBannerAds] = useState([]);
   const [loading, setLoading] = useState(true);
 
+   const [total, setTotal] = useState(0);
+  const [limit, setLimit] = useState(12);
+
   const currentPage = Number(searchParams.get("page")) || 1;
-  const itemsPerPage = 12;
 
   useEffect(() => {
     const loadData = async () => {
@@ -32,17 +37,21 @@ function CinemaNewsPage() {
 
       try {
         // Fetch cinema news
-        const cinemaData = await fetchCinemaNews(baseURL);
-        cinemaData.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        const cinemaData = await fetchCinemaNewsPaginated(
+          baseURL,
+          currentPage,
+          limit,
         );
-        setCinemaNews(cinemaData);
+        
+        setCinemaNews(cinemaData.items);
+         setTotal(cinemaData.total);
+        setLimit(cinemaData.limit);
 
         // Fetch square ads
         const squareData = await fetchSquareAds(baseURL);
         const filteredSquareAds = squareData
           .filter(
-            (ad) => ad.status && ad.page_type?.toLowerCase() === "cinema news"
+            (ad) => ad.status && ad.page_type?.toLowerCase() === "cinema news",
           )
           .sort((a, b) => a.order - b.order)
           .slice(0, 3)
@@ -58,7 +67,7 @@ function CinemaNewsPage() {
         const bannerData = await fetchBannerAds(baseURL);
         const filteredBannerAds = bannerData
           .filter(
-            (ad) => ad.status && ad.page_type?.toLowerCase() === "cinema news"
+            (ad) => ad.status && ad.page_type?.toLowerCase() === "cinema news",
           )
           .sort((a, b) => a.order - b.order)
           .slice(0, 5)
@@ -77,7 +86,7 @@ function CinemaNewsPage() {
     };
 
     loadData();
-  }, [baseURL]);
+  }, [baseURL, currentPage, limit]);
 
   useEffect(() => {
     window.scrollTo({
@@ -86,13 +95,7 @@ function CinemaNewsPage() {
     });
   }, [searchParams]);
 
-  const totalPages = Math.ceil(cinemaNews.length / itemsPerPage);
-  const safeCurrentPage = Math.max(1, Math.min(currentPage, totalPages));
-  const startIndex = (safeCurrentPage - 1) * itemsPerPage;
-  const currentArticles = cinemaNews.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const totalPages = Math.ceil(total / limit);
 
   if (loading)
     return (
@@ -112,11 +115,11 @@ function CinemaNewsPage() {
             Cinema News
           </h2>
 
-           <InlineGoogleAd slot="2236151560" />
+          <InlineGoogleAd slot="2236151560" />
 
           <div className="grid md:grid-cols-3 gap-3">
             {/* Map through the sample data to display the articles */}
-            {currentArticles.map((article) => (
+            {cinemaNews.map((article) => (
               <ArticleCard
                 key={article.id}
                 category="cinema-news"
@@ -129,10 +132,10 @@ function CinemaNewsPage() {
             ))}
           </div>
 
-           <InlineGoogleAd slot="7488478241" />
+          <InlineGoogleAd slot="7488478241" />
 
           <NewsPagination
-            currentPage={safeCurrentPage}
+            currentPage={currentPage}
             totalPages={totalPages}
           />
 

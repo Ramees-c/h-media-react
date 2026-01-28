@@ -4,6 +4,18 @@ export async function fetchCinemaNews(baseURL) {
   return await res.json();
 }
 
+
+export const fetchCinemaNewsLimit = async (baseURL) => {
+  try {
+    const res = await fetch(`${baseURL}/cinema-news/limit`);
+    if (!res.ok) throw new Error("Failed to load cinema news limit");
+    return await res.json();
+  } catch (err) {
+    console.error("Failed to load cinema news limit");
+    return [];
+  }
+};
+
 export async function addCinemaNews(baseURL, formData) {
   const token = localStorage.getItem("access_token");
   const res = await fetch(`${baseURL}/admin/cinema-news/`, {
@@ -50,3 +62,30 @@ export async function deleteCinemaNews(baseURL, id) {
     console.error("Error deleting cinema news");
   }
 }
+
+
+export const fetchCinemaNewsPaginated = async (
+  baseURL,
+  page = 1
+) => {
+  try {
+    const res = await fetch(
+      `${baseURL}/cinema-news/paginate?page=${page}`
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch paginated cinema news");
+    }
+
+    return await res.json(); 
+    // { page, limit, total, items }
+  } catch (err) {
+    console.error("Error fetching paginated cinema news");
+    return {
+      page: 1,
+      limit: 12,
+      total: 0,
+      items: [],
+    };
+  }
+};
