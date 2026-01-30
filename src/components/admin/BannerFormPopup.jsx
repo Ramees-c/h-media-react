@@ -164,6 +164,10 @@ export default function BannerFormPopup({ isOpen, onClose, banner }) {
     formData.append("title", title);
     formData.append("status", status);
 
+    if (link.trim()) {
+      formData.append("link", link.trim());
+    }
+
     if (imageFile) {
       formData.append("image", imageFile);
     }
@@ -171,9 +175,9 @@ export default function BannerFormPopup({ isOpen, onClose, banner }) {
     try {
       let updatedBanner;
       if (banner) {
-        updatedBanner = await updateBanner(baseURL,banner.id, formData);
+        updatedBanner = await updateBanner(baseURL, banner.id, formData);
       } else {
-        updatedBanner = await addBanner(baseURL,formData);
+        updatedBanner = await addBanner(baseURL, formData);
       }
 
       onClose(updatedBanner);
@@ -280,6 +284,24 @@ export default function BannerFormPopup({ isOpen, onClose, banner }) {
             {errors.title && (
               <p className="mt-1 text-sm text-red-500">{errors.title}</p>
             )}
+          </div>
+
+          {/* URL (Optional) */}
+          <div>
+            <label
+              htmlFor="link"
+              className="block text-sm font-medium text-gray-300"
+            >
+              Redirect URL <span className="text-gray-400">(optional)</span>
+            </label>
+            <input
+              id="link"
+              type="url"
+              placeholder="https://example.com"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+              className="mt-1 block w-full bg-gray-900 border border-gray-600 rounded-lg focus:outline-none focus:ring-0 focus:border-brand-red py-2 px-3"
+            />
           </div>
 
           {/* Status */}

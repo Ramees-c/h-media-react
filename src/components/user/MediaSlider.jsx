@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, FreeMode } from "swiper/modules";
 import { PlayCircle } from "lucide-react";
@@ -41,6 +41,7 @@ export default function MediaSlider({
   loading = false,
   trending = false,
 }) {
+  const swiperRef = useRef(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
 
   // Don't render the slider if there are no items and it's not loading
@@ -86,7 +87,13 @@ export default function MediaSlider({
       {/* Video Popup Modal */}
       <VideoPlayerModal
         youtubeId={selectedVideo}
-        onClose={() => setSelectedVideo(null)}
+        onClose={() => {
+          setSelectedVideo(null);
+
+          if (video) {
+            swiperRef.current?.autoplay?.start();
+          }
+        }}
       />
 
       {loading ? (
@@ -101,12 +108,16 @@ export default function MediaSlider({
           spaceBetween={7}
           slidesPerView={"auto"}
           loop={items.length > 4}
-          freeMode={{ enabled: true, momentum: false }}
           speed={4000}
+          allowTouchMove={!video}
+          freeMode={video ? false : { enabled: true, momentum: false }}
           autoplay={{
             delay: 0,
             disableOnInteraction: false,
-            pauseOnMouseEnter: true,
+            pauseOnMouseEnter: !video,
+          }}
+          onSwiper={(swiper) => {
+            swiperRef.current = swiper;
           }}
           className="!px-1 will-change-transform"
         >
@@ -117,7 +128,13 @@ export default function MediaSlider({
                 <div className="group cursor-pointer flex flex-col gap-3 mb-3">
                   <div
                     className="relative overflow-hidden rounded-lg aspect-video"
-                    onClick={() => setSelectedVideo(item.youtubeId)}
+                    onClick={() => {
+                      setSelectedVideo(item.youtubeId);
+
+                      if (video) {
+                        swiperRef.current?.autoplay?.stop();
+                      }
+                    }}
                   >
                     <img
                       src={item.image}

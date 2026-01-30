@@ -233,6 +233,7 @@ function Home() {
             setBanners(
               bannerData.map((item) => ({
                 image: `${baseURL}/${item.image.replace(/\\/g, "/")}`,
+                link: item.link,
               })),
             );
           })

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import { PlayCircle } from "lucide-react";
@@ -21,6 +21,7 @@ export default function VideoVerticalSlider({
   delay = 3000,
   loading = false,
 }) {
+  const swiperRef = useRef(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
 
   if (!loading && (!items || items.length === 0)) return null;
@@ -36,7 +37,10 @@ export default function VideoVerticalSlider({
       {/* Video Modal */}
       <VideoPlayerModal
         youtubeId={selectedVideo}
-        onClose={() => setSelectedVideo(null)}
+        onClose={() => {
+          setSelectedVideo(null);
+          swiperRef.current?.autoplay?.start();
+        }}
       />
 
       {loading ? (
@@ -50,6 +54,7 @@ export default function VideoVerticalSlider({
         </div>
       ) : (
         <Swiper
+          onSwiper={(swiper) => (swiperRef.current = swiper)}
           direction="vertical"
           spaceBetween={14}
           loop={items.length > 6}
@@ -87,7 +92,10 @@ export default function VideoVerticalSlider({
             <SwiperSlide key={index}>
               <div
                 className="group flex gap-4 cursor-pointer items-center"
-                onClick={() => setSelectedVideo(item.youtubeId)}
+                onClick={() => {
+                  swiperRef.current?.autoplay?.stop();
+                  setSelectedVideo(item.youtubeId);
+                }}
               >
                 {/* Thumbnail */}
                 <div className="relative w-36 h-20 overflow-hidden rounded-lg flex-shrink-0">
