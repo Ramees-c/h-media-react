@@ -88,3 +88,44 @@ export const fetchMeetPersonPaginated = async (
     };
   }
 };
+
+export const toggleAddToHomeMeetThePerson = async (baseURL, id, value) => {
+  const token = localStorage.getItem("access_token");
+  const form = new FormData();
+  form.append("add_to_home", value);
+
+  const res = await fetch(`${baseURL}/admin/meet-person/${id}/add_to_home`, {
+    method: "PATCH",
+    body: form,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update add to home meet the person");
+  }
+
+  return res.json();
+};
+
+export const toggleIsSponsoredMeetThePerson = async (baseURL, id, value) => {
+  const token = localStorage.getItem("access_token");
+
+  const form = new FormData();
+  form.append("is_sponsored", value);
+
+  const res = await fetch(`${baseURL}/admin/meet-person/${id}/is_sponsored`, {
+    method: "PATCH",
+    body: form,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update sponsored meet the person");
+  }
+
+  return res.json();
+};

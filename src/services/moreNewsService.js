@@ -90,3 +90,46 @@ export const fetchMoreNewsPaginated = async (
     };
   }
 };
+
+
+export const toggleAddToHomeMoreNews = async (baseURL, id, value) => {
+  const token = localStorage.getItem("access_token");
+  const form = new FormData();
+  form.append("add_to_home", value);
+
+  const res = await fetch(`${baseURL}/admin/more-news/${id}/add_to_home`, {
+    method: "PATCH",
+    body: form,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update add to home more news");
+  }
+
+  return res.json();
+};
+
+
+export const toggleIsSponsoredMoreNews = async (baseURL, id, value) => {
+  const token = localStorage.getItem("access_token");
+
+  const form = new FormData();
+  form.append("is_sponsored", value);
+
+  const res = await fetch(`${baseURL}/admin/more-news/${id}/is_sponsored`, {
+    method: "PATCH",
+    body: form,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update sponsored more news");
+  }
+
+  return res.json();
+};

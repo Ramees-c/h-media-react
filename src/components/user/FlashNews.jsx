@@ -2,21 +2,21 @@ import { useEffect, useState } from "react";
 import { Zap } from "lucide-react";
 import { useApi } from "../../context/ApiContext";
 import { fetchFlashNews } from "../../services/flashNewsService";
+import VideoPlayerModal from "./VideoPlayerModal";
 
 export default function FlashNews() {
   const { baseURL } = useApi();
   const [flash, setFlash] = useState([]);
+  const [youtubeId, setYoutubeId] = useState(null);
 
   useEffect(() => {
     async function load() {
       try {
         const data = await fetchFlashNews(baseURL);
 
-         const activeNews = data
-        .filter((item) => item.status?.toLowerCase() === "active")
-        .sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        );
+        const activeNews = data
+          .filter((item) => item.status?.toLowerCase() === "active")
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
         setFlash(activeNews);
       } catch (err) {
@@ -27,8 +27,23 @@ export default function FlashNews() {
     load();
   }, [baseURL]);
 
- 
-  
+  const getYoutubeId = (url) => {
+    if (!url) return null;
+    const regex =
+      /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  };
+
+  const isSameSite = (url) => {
+    try {
+      return (
+        new URL(url, window.location.origin).origin === window.location.origin
+      );
+    } catch {
+      return false;
+    }
+  };
 
   if (!flash.length)
     return (
@@ -51,23 +66,65 @@ export default function FlashNews() {
         {/* Marquee */}
         <div className="relative flex-1 overflow-hidden">
           <div className="marquee whitespace-nowrap flex gap-12">
-            {duplicated.map((item, i) => (
-              <span
-                key={i}
-                className="flex items-center gap-2 text-white/90 font-bold leading-tight text-sm sm:text-lg font-mal"
-              >
-                <Zap size={28} className="text-yellow-300 fill-yellow-300 mt-1" />
-               <p className="mt-2.5 lg:mt-[8px]"> {item.title}</p>
-              </span>
-            ))}
+            {duplicated.map((item, i) => {
+              const ytId = getYoutubeId(item.link);
+
+              const Content = (
+                <>
+                  <Zap
+                    size={28}
+                    className="text-yellow-300 fill-yellow-300 mt-1"
+                  />
+                  <p className="mt-2.5 lg:mt-[8px]">{item.title}</p>
+                </>
+              );
+
+              return (
+                <span
+                  key={i}
+                  className="flex items-center gap-2 text-white/90 font-bold leading-tight text-sm sm:text-lg font-mal"
+                >
+                  {ytId ? (
+                    /* YOUTUBE → MODAL */
+                    <span
+                      onClick={() => setYoutubeId(ytId)}
+                      className="flex items-center gap-2 cursor-pointer hover:underline"
+                    >
+                      {Content}
+                    </span>
+                  ) : item.link ? (
+                    /* LINK */
+                    <a
+                      href={item.link}
+                      className="flex items-center gap-2 cursor-pointer hover:underline"
+                      {...(!isSameSite(item.link) && {
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                      })}
+                    >
+                      {Content}
+                    </a>
+                  ) : (
+                    /* NO LINK */
+                    <span className="flex items-center gap-2 cursor-default">
+                      {Content}
+                    </span>
+                  )}
+                </span>
+              );
+            })}
           </div>
         </div>
+        <VideoPlayerModal
+          youtubeId={youtubeId}
+          onClose={() => setYoutubeId(null)}
+        />
       </div>
 
       <style>{`
   .marquee {
     display: inline-flex;
-    animation: marquee 40s linear infinite;
+    animation: marquee 60s linear infinite;
   }
   .marquee:hover {
     animation-play-state: paused;

@@ -8,6 +8,8 @@ export default function ArticleCard({
   category,
   content,
   loading,
+  trending,
+  sponsored,
 }) {
   const formatDate = (dateString) => {
     if (!dateString) {
@@ -31,7 +33,6 @@ export default function ArticleCard({
     // Dispatch a custom event to show the global loader
     window.dispatchEvent(new Event("show-loader"));
   };
-  
 
   const sanitizeContent = (html, limit = 140) => {
     if (!html) return "";
@@ -80,6 +81,20 @@ export default function ArticleCard({
           alt={title}
           className="w-full h-full object-fill transition-transform duration-500 group-hover:scale-105"
         />
+
+        {/* TRENDING LABEL */}
+        {trending && (
+          <span className="absolute top-2 left-2 z-10 flex items-center gap-1 bg-brand-gold text-white text-[8px] sm:text-[9px] font-semibold px-1 py-[1px] rounded-md shadow uppercase tracking-wide">
+            Trending
+          </span>
+        )}
+
+        {/* SPONSORED LABEL */}
+        {sponsored && (
+          <span className="absolute bottom-2 right-2 z-10 bg-green-600 text-white text-[8px] sm:text-[9px] font-semibold px-1 py-[1px] rounded-md shadow uppercase tracking-wide">
+            Sponsored
+          </span>
+        )}
       </div>
       <div>
         <h3 className="font-bold text-base md:text-[18px] group-hover:text-brand-red transition-colors leading-snug line-clamp-2">

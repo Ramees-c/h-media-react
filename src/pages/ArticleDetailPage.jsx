@@ -15,6 +15,8 @@ import ShareButtons from "../components/user/ShareButtons";
 import CustomLoader from "../components/user/CustomLoader";
 import { InlineGoogleAd } from "../components/user/GoogleAd";
 import ShareThisInline from "../components/user/ShareThisInline";
+import BottomAdBanner from "../components/user/BottomAdBanner";
+import FullscreenAd from "../components/user/FullscreenAd";
 
 const decodeHTML = (html = "") => {
   if (typeof window === "undefined") return html;
@@ -330,6 +332,9 @@ function ArticleDetailPage() {
             <AdList ads={squareAds} />
           </aside>
         </div>
+
+        {/* <BottomAdBanner /> */}
+        {/* <FullscreenAd /> */}
       </main>
 
       <div>

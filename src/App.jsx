@@ -6,6 +6,9 @@ import ProtectedRoute from "./components/admin/ProtectedRoute";
 import DefaultSEO from "./components/user/DefaultSEO";
 import { Helmet } from "react-helmet-async";
 import ArticleCategoryGuard from "./components/user/ArticleCategoryGuard";
+import AdminBottomAdvertisement from "./pages/admin/AdminBottomAdvertisement";
+import AdminFullScreenAd from "./pages/admin/AdminFullScreenAd";
+import AdminPopupAdPage from "./pages/admin/AdminPopupAdPage";
 // import FourNotFour from "./pages/FourNotFour";
 const FourNotFour = lazy(() => import("./pages/FourNotFour"));
 
@@ -101,6 +104,18 @@ function App() {
               <Route
                 path="advertisement"
                 element={<AdminAdvertisementPage />}
+              />
+              <Route
+                path="bottomadvertisement"
+                element={<AdminBottomAdvertisement />}
+              />
+              <Route
+                path="fullscreenad"
+                element={<AdminFullScreenAd />}
+              />
+              <Route
+                path="popupad"
+                element={<AdminPopupAdPage />}
               />
             </Route>
           </Route>

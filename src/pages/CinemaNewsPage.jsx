@@ -16,6 +16,8 @@ import CustomLoader from "../components/user/CustomLoader";
 
 import { useSearchParams } from "react-router-dom";
 import { InlineGoogleAd } from "../components/user/GoogleAd";
+import BottomAdBanner from "../components/user/BottomAdBanner";
+import FullscreenAd from "../components/user/FullscreenAd";
 
 function CinemaNewsPage() {
   const [searchParams] = useSearchParams();
@@ -26,7 +28,7 @@ function CinemaNewsPage() {
   const [bannerAds, setBannerAds] = useState([]);
   const [loading, setLoading] = useState(true);
 
-   const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(0);
   const [limit, setLimit] = useState(12);
 
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -42,9 +44,9 @@ function CinemaNewsPage() {
           currentPage,
           limit,
         );
-        
+
         setCinemaNews(cinemaData.items);
-         setTotal(cinemaData.total);
+        setTotal(cinemaData.total);
         setLimit(cinemaData.limit);
 
         // Fetch square ads
@@ -128,16 +130,15 @@ function CinemaNewsPage() {
                 date={article.date}
                 slug={article.slug}
                 content={article.content}
+                trending={article.trending}
+                sponsored={article.is_sponsored}
               />
             ))}
           </div>
 
           <InlineGoogleAd slot="7488478241" />
 
-          <NewsPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-          />
+          <NewsPagination currentPage={currentPage} totalPages={totalPages} />
 
           <FullWidthAd ads={bannerAds} />
         </div>
@@ -147,6 +148,9 @@ function CinemaNewsPage() {
           <AdList ads={squareAds} />
         </aside>
       </div>
+
+      {/* <BottomAdBanner /> */}
+      {/* <FullscreenAd /> */}
     </main>
   );
 }

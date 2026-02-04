@@ -15,6 +15,8 @@ import AdList from "../components/user/AdList";
 import FullWidthAd from "../components/user/FullWidthAd";
 import CustomLoader from "../components/user/CustomLoader";
 import { InlineGoogleAd } from "../components/user/GoogleAd";
+import BottomAdBanner from "../components/user/BottomAdBanner";
+import FullscreenAd from "../components/user/FullscreenAd";
 
 function MoreNewsPage() {
   const { baseURL } = useApi();
@@ -128,15 +130,14 @@ function MoreNewsPage() {
                 date={article.date}
                 slug={article.slug}
                 content={article.content}
+                trending={article.trending}
+                sponsored={article.is_sponsored}
               />
             ))}
           </div>
 
           <InlineGoogleAd slot="7488478241" />
-          <NewsPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-          />
+          <NewsPagination currentPage={currentPage} totalPages={totalPages} />
           <FullWidthAd ads={bannerAds} />
         </div>
 
@@ -145,6 +146,9 @@ function MoreNewsPage() {
           <AdList ads={squareAds} />
         </aside>
       </div>
+
+      {/* <BottomAdBanner /> */}
+      {/* <FullscreenAd /> */}
     </main>
   );
 }

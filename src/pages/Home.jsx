@@ -36,6 +36,9 @@ import MediaSlider from "../components/user/MediaSlider";
 import CustomLoader from "../components/user/CustomLoader";
 import { InlineGoogleAd } from "../components/user/GoogleAd";
 import VideoVerticalSlider from "../components/user/VideoVerticalSlider";
+import BottomAdBanner from "../components/user/BottomAdBanner";
+import FullscreenAd from "../components/user/FullscreenAd";
+import PopupAd from "../components/user/PopupAd";
 
 const getYouTubeId = (url) => {
   if (!url) return null;
@@ -110,6 +113,8 @@ function Home() {
                 date: item.date,
                 slug: item.slug,
                 content: item.content,
+                trending: item.trending,
+                sponsored: item.is_sponsored,
               })),
             );
           })
@@ -147,6 +152,7 @@ function Home() {
                 date: item.date,
                 slug: item.slug,
                 content: item.content,
+                sponsored: item.is_sponsored,
               })),
             );
           })
@@ -165,6 +171,8 @@ function Home() {
                 date: item.date,
                 slug: item.slug,
                 content: item.content,
+                trending: item.trending,
+                sponsored: item.is_sponsored,
               })),
             );
           })
@@ -183,6 +191,8 @@ function Home() {
                 date: item.date,
                 slug: item.slug,
                 content: item.content,
+                trending: item.trending,
+                sponsored: item.is_sponsored,
               })),
             );
           })
@@ -220,6 +230,8 @@ function Home() {
                 date: item.date,
                 slug: item.slug,
                 content: item.content,
+                trending: item.trending,
+                sponsored: item.is_sponsored,
               })),
             );
           })
@@ -322,6 +334,7 @@ function Home() {
         <CustomLoader />
       </>
     );
+
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
       <section className="container mx-auto px-4 py-8">
@@ -446,9 +459,13 @@ function Home() {
           <InlineGoogleAd slot="9923069891" />
           <AdList ads={squareAds} />
         </aside>
+
+        <BottomAdBanner />
+        <FullscreenAd />
+        <PopupAd />
       </div>
     </main>
-  );
+);
 }
 
 export default Home;

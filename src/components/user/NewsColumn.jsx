@@ -7,6 +7,7 @@ export default function NewsColumn({
   trending = false,
   loading = false,
   category,
+  sponsored = false,
 }) {
   const formatDate = (dateString) => {
     if (!dateString) return null;
@@ -95,7 +96,19 @@ export default function NewsColumn({
                 onClick={handleLinkClick}
               >
                 {/* IMAGE BOX */}
-                <div className="w-32 sm:w-28 md:w-32 h-20 sm:h-24 md:h-20 flex-shrink-0 overflow-hidden rounded-lg">
+                <div className="relative w-32 sm:w-28 md:w-32 h-20 sm:h-24 md:h-20 flex-shrink-0 overflow-hidden rounded-lg">
+                  {/* SPONSORED BADGE (GREEN) */}
+                  {item.sponsored && (
+                    <span className="absolute bottom-0 right-0 z-10 bg-green-600 text-white text-[8px] sm:text-[8px] font-semibold px-1 py-[1px] rounded-md shadow uppercase tracking-wide">
+                      Sponsored
+                    </span>
+                  )}
+
+                  {item.trending && (
+                    <span className="absolute top-0 left-0 z-10 flex items-center gap-1 bg-brand-gold text-white text-[8px] sm:text-[8px] font-semibold px-1 py-[1px] rounded-md shadow uppercase tracking-wide">
+                      Trending
+                    </span>
+                  )}
                   <img
                     src={item.image}
                     alt={item.title}

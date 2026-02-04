@@ -9,6 +9,7 @@ export async function addFlashNews(baseURL,data) {
   const form = new FormData();
   form.append("title", data.title);
   form.append("status", data.status);
+  form.append("link", data.url);
 
   const res = await fetch(`${baseURL}/admin/flash-news/`, {
     method: "POST",
@@ -28,6 +29,7 @@ export async function updateFlashNews(baseURL,id, data) {
   const form = new FormData();
   form.append("title", data.title);
   form.append("status", data.status);
+   form.append("link", data.url);
 
   const res = await fetch(`${baseURL}/admin/flash-news/${id}`, {
     method: "PUT",

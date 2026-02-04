@@ -38,6 +38,9 @@ const MENU_ITEMS = [
   },
   { name: "More News", href: "/hmedianews/more", icon: MoreHorizontal },
   { name: "Advertisement", href: "/hmedianews/advertisement", icon: Megaphone },
+  { name: "Bottom AD Banner", href: "/hmedianews/bottomadvertisement", icon: Megaphone },
+  { name: "Full Screen AD", href: "/hmedianews/fullscreenad", icon: Megaphone },
+  { name: "Popup AD", href: "/hmedianews/popupad", icon: Megaphone },
 ];
 
 export default function AdminSidebar({ isOpen, setIsOpen }) {

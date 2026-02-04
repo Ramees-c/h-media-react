@@ -4,7 +4,10 @@ import {
   fetchBannerAds,
   fetchSquareAds,
 } from "../services/advertisementService";
-import { fetchLatestNews, fetchLatestNewsPaginated } from "../services/latestNewsService";
+import {
+  fetchLatestNews,
+  fetchLatestNewsPaginated,
+} from "../services/latestNewsService";
 import ArticleCard from "../components/user/ArticleCard";
 import NewsPagination from "../components/user/NewsPagination";
 import FullWidthAd from "../components/user/FullWidthAd";
@@ -13,6 +16,9 @@ import CustomLoader from "../components/user/CustomLoader";
 
 import { useSearchParams } from "react-router-dom";
 import { InlineGoogleAd } from "../components/user/GoogleAd";
+import BottomAdBanner from "../components/user/BottomAdBanner";
+import FullscreenAd from "../components/user/FullscreenAd";
+import PopupAd from "../components/user/PopupAd";
 
 function LatestNewsPage() {
   const [searchParams] = useSearchParams();
@@ -119,6 +125,8 @@ function LatestNewsPage() {
                 date={article.date}
                 slug={article.slug}
                 content={article.content}
+                trending={article.trending}
+                sponsored={article.is_sponsored}
               />
             ))}
           </div>
@@ -135,6 +143,10 @@ function LatestNewsPage() {
           <AdList ads={squareAds} />
         </aside>
       </div>
+
+      {/* <BottomAdBanner /> */}
+      {/* <FullscreenAd /> */}
+      {/* <PopupAd /> */}
     </main>
   );
 }

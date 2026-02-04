@@ -9,6 +9,7 @@ export default function FlashNewsFormPopup({
 }) {
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState("Active");
+  const [url, setUrl] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -17,10 +18,12 @@ export default function FlashNewsFormPopup({
       if (newsItem) {
         setTitle(newsItem.title || "");
         setStatus(newsItem.status || "Active");
+        setUrl(newsItem.link  || "");
       } else {
         // Reset for new entry
         setTitle("");
         setStatus("Active");
+        setUrl("");
       }
       setError(""); // Clear errors when opening
       setIsSubmitting(false); // Reset submitting state
@@ -38,10 +41,9 @@ export default function FlashNewsFormPopup({
 
     setIsSubmitting(true);
     try {
-      await onSubmit({ title, status });
+      await onSubmit({ title, status, url });
     } catch (err) {
       console.error("Submission failed");
-     
     } finally {
       setIsSubmitting(false);
     }
@@ -87,6 +89,24 @@ export default function FlashNewsFormPopup({
               placeholder="Enter flash news title"
             />
             {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
+          </div>
+
+          {/* URL (Optional) */}
+          <div>
+            <label
+              htmlFor="url"
+              className="block text-sm font-medium text-gray-300"
+            >
+              URL (optional)
+            </label>
+            <input
+              type="url"
+              id="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className="mt-1 block w-full bg-gray-900 border border-gray-600 rounded-md shadow-sm py-2.5 px-3 focus:outline-none focus:border-brand-red text-sm"
+              placeholder="https://example.com"
+            />
           </div>
 
           {/* Status Toggle */}

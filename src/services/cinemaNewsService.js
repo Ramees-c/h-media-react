@@ -89,3 +89,46 @@ export const fetchCinemaNewsPaginated = async (
     };
   }
 };
+
+export const toggleAddToHomeCinemaNews = async (baseURL, id, value) => {
+  const token = localStorage.getItem("access_token");
+  const form = new FormData();
+  form.append("add_to_home", value);
+
+  const res = await fetch(`${baseURL}/admin/cinema-news/${id}/add_to_home`, {
+    method: "PATCH",
+    body: form,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update add to home cinema news");
+  }
+
+  return res.json();
+};
+
+
+
+export const toggleIsSponsoredCinemaNews = async (baseURL, id, value) => {
+  const token = localStorage.getItem("access_token");
+
+  const form = new FormData();
+  form.append("is_sponsored", value);
+
+  const res = await fetch(`${baseURL}/admin/cinema-news/${id}/is_sponsored`, {
+    method: "PATCH",
+    body: form,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update sponsored cinema news");
+  }
+
+  return res.json();
+};

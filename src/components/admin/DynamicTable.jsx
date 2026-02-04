@@ -39,14 +39,14 @@ onChange={(e) => onSearch(e.target.value)}
           </div>
         </>
       )}
-      <table className="w-full text-sm text-left text-gray-700">
+      <table className="w-full text-sm text-left text-gray-700 ">
         <thead className="bg-gray-50 text-xs text-gray-600 uppercase tracking-wider font-medium">
           <tr>
             {columns.map((col) => (
               <th
                 key={col.header}
                 scope="col"
-                className={`px-6 py-3 ${col.headerClassName || ""}`}
+                className={`px-6 py-3 whitespace-nowrap ${col.headerClassName || ""}`}
               >
                 {col.header}
               </th>
@@ -63,7 +63,7 @@ onChange={(e) => onSearch(e.target.value)}
                 {columns.map((col) => (
                   <td
                     key={`${row[uniqueKeyAccessor]}-${col.header}`}
-                    className={`px-6 py-4 ${col.cellClassName || ""}`}
+                    className={`px-6 py-4 whitespace-nowrap ${col.cellClassName || ""}`}
                   >
                     {col.type === "image" ? (
                       <img

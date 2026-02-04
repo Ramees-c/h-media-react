@@ -28,24 +28,27 @@ function HomeBannerPage() {
   const [bannerToDelete, setBannerToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
- useEffect(() => {
+  useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
 
   const loadBanners = useCallback(async () => {
     setIsLoading(true);
+    setBanners([])
     try {
       const data = (await fetchBanners(baseURL)) || [];
 
       data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-      const mapped = data.map((b) => ({
-        ...b,
-        imageUrl:
-          typeof b.image === "string" && b.image
-            ? `${baseURL}/${b.image.replace(/\\/g, "/")}`
-            : "/placeholder.jpg",
-      }));
+      const mapped = data.map((b) => {
+        let imageUrl = "/placeholder.jpg";
+
+        if (b?.image && typeof b.image === "string" && baseURL) {
+          imageUrl = `${baseURL}/${b.image.replace(/\\/g, "/")}`;
+        }
+
+        return { ...b, imageUrl };
+      });
 
       setBanners(mapped);
     } catch (err) {
@@ -57,8 +60,9 @@ function HomeBannerPage() {
 
   // Fetch banners on initial load
   useEffect(() => {
+    if (!baseURL) return;
     loadBanners();
-  }, [loadBanners]);
+  }, [baseURL, loadBanners]);
 
   // Scroll to top when Add/Edit popup opens
   useEffect(() => {
@@ -114,7 +118,6 @@ function HomeBannerPage() {
             src={src}
             alt="Banner preview"
             className="w-full h-full max-w-[100vw] max-h-[100vh] md:max-w-[92vw] md:max-h-[92vh] rounded-lg shadow-2xl object-contain"
-            draggable={false}
           />
 
           <button
@@ -126,7 +129,7 @@ function HomeBannerPage() {
           </button>
         </div>
       </div>,
-      document.body
+      document.body,
     );
   };
 
@@ -191,7 +194,7 @@ function HomeBannerPage() {
     if (!bannerToDelete) return;
     setIsDeleting(true);
     try {
-      await deleteBanner(baseURL,bannerToDelete.id);
+      await deleteBanner(baseURL, bannerToDelete.id);
       loadBanners();
     } catch (err) {
       console.error("Failed to delete banner");
@@ -204,9 +207,9 @@ function HomeBannerPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
+        <div className="mb-10">
           <h1 className="text-2xl md:text-3xl font-bold">
             Home Banner Management
           </h1>
@@ -234,7 +237,7 @@ function HomeBannerPage() {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentBanners.map((banner) => (
+        {currentBanners.map((banner,index) => (
           <div key={banner.id}>
             <div className="group relative overflow-hidden rounded-lg bg-[#0f0f0f] shadow-lg hover:shadow-xl transition-all">
               <img
@@ -242,8 +245,6 @@ function HomeBannerPage() {
                 alt={banner.title}
                 onClick={() => setPreviewImage(banner.imageUrl)}
                 className="w-full h-48 sm:h-56 md:h-60 object-cover cursor-pointer transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
-                draggable={false}
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none"></div>
@@ -346,6 +347,7 @@ function HomeBannerPage() {
       <BannerFormPopup
         isOpen={isPopupOpen}
         onClose={(updatedBanner) => {
+           setCurrentPage(1); 
           setIsPopupOpen(false);
 
           if (updatedBanner) {

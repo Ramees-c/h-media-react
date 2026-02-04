@@ -16,6 +16,8 @@ import CustomLoader from "../components/user/CustomLoader";
 
 import { useSearchParams } from "react-router-dom";
 import { InlineGoogleAd } from "../components/user/GoogleAd";
+import BottomAdBanner from "../components/user/BottomAdBanner";
+import FullscreenAd from "../components/user/FullscreenAd";
 
 function MeetThePersonPage() {
   const [searchParams] = useSearchParams();
@@ -41,7 +43,7 @@ function MeetThePersonPage() {
           currentPage,
           limit,
         );
-       
+
         setMeetPersons(data.items);
         setTotal(data.total);
         setLimit(data.limit);
@@ -129,16 +131,15 @@ function MeetThePersonPage() {
                 date={article.date}
                 slug={article.slug}
                 content={article.content}
+                trending={article.trending}
+                sponsored={article.is_sponsored}
               />
             ))}
           </div>
 
           <InlineGoogleAd slot="7488478241" />
 
-          <NewsPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-          />
+          <NewsPagination currentPage={currentPage} totalPages={totalPages} />
 
           <FullWidthAd ads={bannerAds} />
         </div>
@@ -148,6 +149,9 @@ function MeetThePersonPage() {
           <AdList ads={squareAds} />
         </aside>
       </div>
+
+      {/* <BottomAdBanner /> */}
+      {/* <FullscreenAd /> */}
     </main>
   );
 }

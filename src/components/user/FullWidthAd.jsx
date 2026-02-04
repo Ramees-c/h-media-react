@@ -24,7 +24,7 @@ export default function FullWidthAd({ ads }) {
               <div className="relative w-full">
                 {/* Ad Image */}
                 {ad.link ? (
-                  <a href={ad.link} className="block">
+                  <a href={ad.link} target="_blank" className="block">
                     <img
                       src={ad.image}
                       alt="Advertisement"

@@ -20,7 +20,6 @@ export const fetchLatestNewsLimit = async (baseURL) => {
   }
 };
 
-
 export const addLatestNews = async (baseURL, formData) => {
   const token = localStorage.getItem("access_token");
   try {
@@ -63,12 +62,12 @@ export const updateLatestNews = async (baseURL, newsId, formData) => {
   }
 };
 
-export const deleteLatestNews = async (baseURL,newsId) => {
-   const token = localStorage.getItem("access_token");
+export const deleteLatestNews = async (baseURL, newsId) => {
+  const token = localStorage.getItem("access_token");
   try {
     const res = await fetch(`${baseURL}/admin/news/${newsId}`, {
       method: "DELETE",
-        headers: {
+      headers: {
         Authorization: `Bearer ${token}`,
       },
     });
@@ -83,21 +82,15 @@ export const deleteLatestNews = async (baseURL,newsId) => {
   }
 };
 
-
-export const fetchLatestNewsPaginated = async (
-  baseURL,
-  page = 1
-) => {
+export const fetchLatestNewsPaginated = async (baseURL, page = 1) => {
   try {
-    const res = await fetch(
-      `${baseURL}/news/paginate?page=${page}`
-    );
+    const res = await fetch(`${baseURL}/news/paginate?page=${page}`);
 
     if (!res.ok) {
       throw new Error("Failed to fetch paginated news");
     }
 
-    return await res.json(); 
+    return await res.json();
     // { page, limit, total, items }
   } catch (err) {
     console.error("Error fetching paginated news");
@@ -108,4 +101,45 @@ export const fetchLatestNewsPaginated = async (
       items: [],
     };
   }
+};
+
+export const toggleAddToHomeLatestNews = async (baseURL, id, value) => {
+  const token = localStorage.getItem("access_token");
+  const form = new FormData();
+  form.append("add_to_home", value);
+
+  const res = await fetch(`${baseURL}/admin/news/${id}/add_to_home`, {
+    method: "PATCH",
+    body: form,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update add to home latest news");
+  }
+
+  return res.json();
+};
+
+export const toggleIsSponsoredLatestNews = async (baseURL, id, value) => {
+  const token = localStorage.getItem("access_token");
+
+  const form = new FormData();
+  form.append("is_sponsored", value);
+
+  const res = await fetch(`${baseURL}/admin/news/${id}/is_sponsored`, {
+    method: "PATCH",
+    body: form,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update sponsored latest news");
+  }
+
+  return res.json();
 };

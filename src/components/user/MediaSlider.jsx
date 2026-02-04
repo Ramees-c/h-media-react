@@ -166,12 +166,26 @@ export default function MediaSlider({
                   onClick={handleLinkClick}
                   className="group flex flex-col mb-3"
                 >
-                  <div className="w-full overflow-hidden rounded-lg mb-3 aspect-video">
+                  <div className="relative w-full overflow-hidden rounded-lg mb-3 aspect-video">
                     <img
                       src={item.image}
                       alt={item.title}
                       className="w-full h-full object-fill transform-gpu transition-transform duration-500 group-hover:scale-105"
                     />
+
+                    {/* TRENDING LABEL */}
+                    {item.trending && (
+                      <span className="absolute top-1 left-1 z-10 flex items-center gap-1 bg-brand-gold text-white text-[8px] sm:text-[9px] font-semibold px-1 py-[1px] rounded-md shadow uppercase tracking-wide">
+                        Trending
+                      </span>
+                    )}
+
+                    {/* SPONSORED LABEL */}
+                    {item.sponsored && (
+                      <span className="absolute bottom-1 right-1 z-10 bg-green-600 text-white text-[8px] sm:text-[9px] font-semibold px-1 py-[1px] rounded-md shadow uppercase tracking-wide">
+                        Sponsored
+                      </span>
+                    )}
                   </div>
 
                   <p className="font-bold text-base md:text-[18px] leading-snug line-clamp-2 font-mal group-hover:text-brand-red transition-colors mb-2">

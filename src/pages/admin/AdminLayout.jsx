@@ -6,7 +6,7 @@ import AdminSidebar from "../../components/admin/AdminSidebar";
 function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
-    <div className="min-h-screen bg-gray-50 text-[#141414] flex">
+    <div className="min-h-screen bg-gray-50 text-[#141414] flex ">
       {/* Sidebar */}
       <AdminSidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 

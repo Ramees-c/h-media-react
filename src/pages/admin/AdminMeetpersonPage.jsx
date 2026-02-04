@@ -10,6 +10,8 @@ import {
   addMeetPerson,
   updateMeetPerson,
   deleteMeetPerson,
+  toggleAddToHomeMeetThePerson,
+  toggleIsSponsoredMeetThePerson,
 } from "../../services/meetPersonService";
 import { useApi } from "../../context/ApiContext";
 
@@ -160,6 +162,48 @@ function AdminMeetpersonPage() {
     setEditingArticle(null);
   };
 
+  const handleToggleHome = async (person) => {
+    try {
+      setList((prev) =>
+        prev.map((item) =>
+          item.id === person.id
+            ? { ...item, add_to_home: !item.add_to_home }
+            : item,
+        ),
+      );
+
+      await toggleAddToHomeMeetThePerson(
+        baseURL,
+        person.id,
+        !person.add_to_home,
+      );
+    } catch (err) {
+      console.error("Failed to toggle add to home meet the person");
+    }
+  };
+
+
+   const handleToggleSponsored = async (newsItem) => {
+    try {
+      await toggleIsSponsoredMeetThePerson(
+        baseURL,
+        newsItem.id,
+        !newsItem.is_sponsored,
+      );
+
+      // Optimistic UI update
+      setList((prev) =>
+        prev.map((item) =>
+          item.id === newsItem.id
+            ? { ...item, is_sponsored: !item.is_sponsored }
+            : item,
+        ),
+      );
+    } catch (err) {
+      console.error("Failed to toggle sponsored Meet The Person");
+    }
+  };
+
   // ------------------------------------
   // TABLE COLUMNS
   // ------------------------------------
@@ -195,8 +239,37 @@ function AdminMeetpersonPage() {
       headerClassName: "text-right",
       cellClassName: "text-right",
       cell: (row) => (
-        <div className="flex items-center justify-end gap-4">
-          <button
+        <div className="flex flex-col items-end gap-4">
+          {/* ADD TO HOME TOGGLE */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-gray-600">Add to Home</span>
+
+            <button
+              onClick={() => handleToggleHome(row)}
+              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                row.add_to_home ? "bg-green-600" : "bg-gray-300"
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  row.add_to_home ? "translate-x-4" : "translate-x-1"
+                }`}
+              />
+            </button>
+          </div>
+
+           {/* SPONSORED CHECKBOX */}
+          <label className="flex items-center gap-1 text-xs text-gray-600 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={row.is_sponsored || false}
+              onChange={() => handleToggleSponsored(row)}
+              className="accent-yellow-500 cursor-pointer"
+            />
+            Sponsored
+          </label>
+       <div className="flex items-center gap-3">
+           <button
             onClick={() => handleEdit(row)}
             className="text-blue-600 hover:text-blue-800 cursor-pointer"
           >
@@ -209,6 +282,7 @@ function AdminMeetpersonPage() {
           >
             <Trash2 size={18} />
           </button>
+       </div>
         </div>
       ),
     },
