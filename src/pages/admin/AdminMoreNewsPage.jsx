@@ -294,9 +294,9 @@ function AdminMoreNewsPage() {
         <>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold">More News</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">Business Stories</h1>
               <p className="text-gray-700 mt-1 text-sm md:text-base">
-                Manage all additional news articles and updates.
+                Manage all Business Stories.
               </p>
             </div>
 
@@ -305,7 +305,7 @@ function AdminMoreNewsPage() {
               className="flex items-center gap-2 bg-brand-red text-white font-semibold px-4 py-2 rounded-lg transition-all w-full md:w-auto justify-center cursor-pointer"
             >
               <Plus size={20} />
-              Add News...
+              Add Business Stories
             </button>
           </div>
 
@@ -349,18 +349,18 @@ function AdminMoreNewsPage() {
             </button>
 
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold">Add More News</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">Add Business Stories</h1>
               <p className="text-gray-700 mt-1 text-sm md:text-base">
-                Add a new article to the More News section.
+                Add a new article to the Business Stories section.
               </p>
             </div>
           </div>
 
           <AddArticle
-            heading="Create More News"
+            heading="Create Business Stories"
             onSubmit={handleFormSubmit}
             onCancel={handleCancel}
-            buttonText="Add More News"
+            buttonText="Add Business Stories"
             serverError={serverError}
           />
         </div>
@@ -378,19 +378,19 @@ function AdminMoreNewsPage() {
             </button>
 
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold">Edit More News</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">Edit Business Stories</h1>
               <p className="text-gray-700 mt-1 text-sm md:text-base">
-                Edit and update the selected More News article.
+                Edit and update the selected Business Stories article.
               </p>
             </div>
           </div>
 
           <AddArticle
-            heading="Update More News"
+            heading="Update Business Stories"
             initialData={editingArticle}
             onSubmit={handleFormSubmit}
             onCancel={handleCancel}
-            buttonText="Update More News"
+            buttonText="Update Business Stories"
             serverError={serverError}
           />
         </div>

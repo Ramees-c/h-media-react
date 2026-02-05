@@ -4,6 +4,8 @@ import { useApi } from "../../context/ApiContext";
 import { fetchFlashNews } from "../../services/flashNewsService";
 import VideoPlayerModal from "./VideoPlayerModal";
 
+import { Link } from "react-router-dom";
+
 export default function FlashNews() {
   const { baseURL } = useApi();
   const [flash, setFlash] = useState([]);
@@ -94,16 +96,23 @@ export default function FlashNews() {
                     </span>
                   ) : item.link ? (
                     /* LINK */
-                    <a
-                      href={item.link}
-                      className="flex items-center gap-2 cursor-pointer hover:underline"
-                      {...(!isSameSite(item.link) && {
-                        target: "_blank",
-                        rel: "noopener noreferrer",
-                      })}
-                    >
-                      {Content}
-                    </a>
+                    isSameSite(item.link) ? (
+                      <Link
+                        to={new URL(item.link, window.location.origin).pathname}
+                        className="flex items-center gap-2 cursor-pointer hover:underline"
+                      >
+                        {Content}
+                      </Link>
+                    ) : (
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 cursor-pointer hover:underline"
+                      >
+                        {Content}
+                      </a>
+                    )
                   ) : (
                     /* NO LINK */
                     <span className="flex items-center gap-2 cursor-default">

@@ -427,7 +427,7 @@ function Home() {
                 trending={true}
               />
             </div>
-            <MediaSlider title="More News" items={moreNews} loading={false} />
+            <MediaSlider title="Business Stories" items={moreNews} loading={false} />
             <div className="flex justify-end mt-2">
               <Link
                 to="/more"

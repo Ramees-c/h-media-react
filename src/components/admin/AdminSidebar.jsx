@@ -36,7 +36,7 @@ const MENU_ITEMS = [
     href: "/hmedianews/teaserandpromo",
     icon: Clapperboard,
   },
-  { name: "More News", href: "/hmedianews/more", icon: MoreHorizontal },
+  { name: "Business Stories", href: "/hmedianews/more", icon: MoreHorizontal },
   { name: "Advertisement", href: "/hmedianews/advertisement", icon: Megaphone },
   { name: "Bottom AD Banner", href: "/hmedianews/bottomadvertisement", icon: Megaphone },
   { name: "Full Screen AD", href: "/hmedianews/fullscreenad", icon: Megaphone },

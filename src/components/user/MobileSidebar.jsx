@@ -79,7 +79,7 @@ export default function MobileSidebar({ isOpen, onClose, navLinks }) {
             onClick={onClose}
           >
             <Youtube size={16} />
-            <span>Subscribe on YouTube</span>
+            <span className="mt-[2px]">Subscribe on YouTube</span>
           </Link>
 
           <div>
@@ -112,7 +112,7 @@ export default function MobileSidebar({ isOpen, onClose, navLinks }) {
                 className="bg-pink-600 w-full flex items-center justify-center gap-2 text-white  py-2 rounded-lg font-semibold hover:bg-brand-dark transition-colors text-sm"
               >
                 <Instagram size={16} />
-                <span>Instagram</span>
+                <span className="mt-[2px]">Instagram</span>
               </Link>
 
               {/* Facebook */}
@@ -123,7 +123,7 @@ export default function MobileSidebar({ isOpen, onClose, navLinks }) {
                 className="bg-blue-600 w-full flex items-center justify-center gap-2 text-white  py-2 rounded-lg font-semibold hover:bg-brand-dark transition-colors text-sm"
               >
                 <Facebook size={16} />
-                <span>Facebook</span>
+                <span className="mt-[2px]">Facebook</span>
               </Link>
             </div>
           </div>

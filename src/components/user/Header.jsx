@@ -17,7 +17,7 @@ const navLinks = [
   { name: "Cinema News", href: "/cinemanews" },
   { name: "Meet The Person", href: "/meettheperson" },
   { name: "Trailers And Previews", href: "/teaserandpromo" },
-  { name: "More News", href: "/more" },
+  { name: "Business Stories", href: "/more" },
 ];
 
 export default function Header() {
@@ -107,7 +107,7 @@ export default function Header() {
                     className="bg-pink-600 text-white px-4 py-1.5 rounded-lg font-semibold hover:bg-pink-700 transition-colors flex items-center gap-2"
                   >
                     <Instagram size={16} />
-                    <span>Instagram</span>
+                    <span className="mt-[2px]">Instagram</span>
                   </Link>
 
                   {/* Facebook */}
@@ -118,7 +118,7 @@ export default function Header() {
                     className="bg-blue-600 text-white px-4 py-1.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center gap-2"
                   >
                     <Facebook size={16} />
-                    <span>Facebook</span>
+                    <span className="mt-[2px]">Facebook</span>
                   </Link>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
+import { Link } from "react-router-dom";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -24,6 +25,16 @@ export default function Hero({ banners }) {
 
     const match = url.match(regex);
     return match ? match[1] : null;
+  };
+
+  const isSameSite = (url) => {
+    try {
+      return (
+        new URL(url, window.location.origin).origin === window.location.origin
+      );
+    } catch {
+      return false;
+    }
   };
 
   return (
@@ -59,22 +70,33 @@ export default function Hero({ banners }) {
                   />
                 </div>
               ) : banner.link ? (
-                /* NORMAL LINK */
-                <a
-                  href={banner.link}
-                  className="relative w-full lg:h-full rounded-lg block cursor-pointer"
-                  {...(!banner.link.startsWith(window.location.origin) && {
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                  })}
-                >
-                  <img
-                    src={banner.image}
-                    alt={banner.title || "Banner image"}
-                    draggable={false}
-                    className="w-full lg:h-full object-fill rounded-lg cursor-pointer"
-                  />
-                </a>
+                isSameSite(banner.link) ? (
+                  <Link
+                    to={new URL(banner.link, window.location.origin).pathname}
+                    className="relative w-full lg:h-full rounded-lg block cursor-pointer"
+                  >
+                    <img
+                      src={banner.image}
+                      alt={banner.title || "Banner image"}
+                      draggable={false}
+                      className="w-full lg:h-full object-fill rounded-lg cursor-pointer"
+                    />
+                  </Link>
+                ) : (
+                  <a
+                    href={banner.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative w-full lg:h-full rounded-lg block cursor-pointer"
+                  >
+                    <img
+                      src={banner.image}
+                      alt={banner.title || "Banner image"}
+                      draggable={false}
+                      className="w-full lg:h-full object-fill rounded-lg cursor-pointer"
+                    />
+                  </a>
+                )
               ) : (
                 /* NO LINK */
                 <div className="relative w-full lg:h-full rounded-lg block">

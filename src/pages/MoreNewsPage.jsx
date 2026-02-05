@@ -114,7 +114,7 @@ function MoreNewsPage() {
             className="text-lg sm:text-xl md:text-2xl font-black uppercase 
         border-b-2 border-brand-red pb-2 text-brand-dark mb-6"
           >
-            More News
+            Business Stories
           </h2>
 
           <InlineGoogleAd slot="2236151560" />

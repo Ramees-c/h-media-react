@@ -76,7 +76,7 @@ export default function AdminDashboard() {
           { name: "Latest News", count: latest.length },
           { name: "Cinema News", count: cinema.length },
           { name: "Meet Person", count: meet.length },
-          { name: "More News", count: more.length },
+          { name: "Business Stories", count: more.length },
           { name: "Teasers", count: teasers.length },
           { name: "Banners", count: banners.length },
         ]);
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
         />
 
         <StatCard
-          title="More News"
+          title="Business Stories"
           value={loading ? "—" : stats.more}
           icon={FileText}
           color="bg-orange-500"
