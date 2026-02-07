@@ -39,6 +39,9 @@ import VideoVerticalSlider from "../components/user/VideoVerticalSlider";
 import BottomAdBanner from "../components/user/BottomAdBanner";
 import FullscreenAd from "../components/user/FullscreenAd";
 import PopupAd from "../components/user/PopupAd";
+import { fetchBottomAdBanner } from "../services/bottomAdService";
+import { fetchPopupAd } from "../services/popupAdService";
+import { fetchFullScreenAds } from "../services/fullScreenAdService";
 
 const getYouTubeId = (url) => {
   if (!url) return null;
@@ -71,12 +74,16 @@ function Home() {
   const [teasers, setTeasers] = useState([]);
   const [squareAds, setSquareAds] = useState([]);
   const [bannerAds, setBannerAds] = useState([]);
+  const [poupAd, setPopuAd] = useState([]);
+  const [fullScreenAd, setFullScreenAd] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [loadingLatest, setLoadingLatest] = useState(true);
   const [loadingTrending, setLoadingTrending] = useState(true);
   const [loadingCinema, setLoadingCinema] = useState(true);
   const [loadingMeet, setLoadingMeet] = useState(true);
+
+  const [bottomAdBanner, setBottomAdBanner] = useState([]);
 
   useEffect(() => {
     async function loadData() {
@@ -298,6 +305,7 @@ function Home() {
           .catch((err) => console.error("Square Ads Error")),
       );
 
+      // Banner ads
       promises.push(
         fetchBannerAds(baseURL)
           .then((bannerAdsData) => {
@@ -319,6 +327,74 @@ function Home() {
             );
           })
           .catch((err) => console.error("Banner Ads Error")),
+      );
+
+      // Bottom Ad Bannner
+      promises.push(
+        fetchBottomAdBanner(baseURL)
+          .then((BottombannerAdsData) => {
+            setBottomAdBanner(
+              BottombannerAdsData.filter(
+                (ad) =>
+                  ad.status === true && ad.page_type?.toLowerCase() === "home",
+              )
+                .sort((a, b) => a.order - b.order)
+                .slice(0, 5)
+                .map((ad) => ({
+                  image: `${baseURL}/${ad.image.replace(/\\/g, "/")}`,
+                  link: ad.link,
+                  order: ad.order,
+                  title: ad.title,
+                })),
+            );
+          })
+          .catch((err) => console.error("Bottom Banner Ads Error")),
+      );
+
+      // Popup Ad
+      promises.push(
+        fetchPopupAd(baseURL)
+          .then((popupAdData) => {
+            setPopuAd(
+              popupAdData
+                .filter(
+                  (ad) =>
+                    ad.status === true &&
+                    ad.page_type?.toLowerCase() === "home",
+                )
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                .slice(0, 1)
+                .map((ad) => ({
+                  image: `${baseURL}/${ad.image.replace(/\\/g, "/")}`,
+                  link: ad.link,
+                  title: ad.title,
+                })),
+            );
+          })
+          .catch((err) => console.error("Popup Ads Error")),
+      );
+
+      // Full screen Ad
+      promises.push(
+        fetchFullScreenAds(baseURL)
+          .then((fullScreenAdData) => {
+            setFullScreenAd(
+              fullScreenAdData
+                .filter(
+                  (ad) =>
+                    ad.status === true &&
+                    ad.page_type?.toLowerCase() === "home",
+                )
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                .slice(0, 1)
+                .map((ad) => ({
+                  image: `${baseURL}/${ad.image.replace(/\\/g, "/")}`,
+                  link: ad.link,
+                  title: ad.title,
+                })),
+            );
+          })
+          .catch((err) => console.error("Full sreen Ads Error")),
       );
 
       await Promise.all(promises);
@@ -371,14 +447,6 @@ function Home() {
       </section>
       <section className="w-full">
         <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          <div className="mb-6 xl:mb-0">
-            <NewsColumn
-              title="LATEST NEWS"
-              items={latestNews}
-              loading={loadingLatest}
-              category="news"
-            />
-          </div>
           <div className="mb-6 lg:mb-0">
             <NewsColumn
               title="Cinema News"
@@ -387,6 +455,15 @@ function Home() {
               category="cinema-news"
             />
           </div>
+          <div className="mb-6 xl:mb-0">
+            <NewsColumn
+              title="LATEST NEWS"
+              items={latestNews}
+              loading={loadingLatest}
+              category="news"
+            />
+          </div>
+
           <div className="mb-6 lg:mb-0">
             <NewsColumn
               title="Meet The Person"
@@ -427,7 +504,11 @@ function Home() {
                 trending={true}
               />
             </div>
-            <MediaSlider title="Business Stories" items={moreNews} loading={false} />
+            <MediaSlider
+              title="Business Stories"
+              items={moreNews}
+              loading={false}
+            />
             <div className="flex justify-end mt-2">
               <Link
                 to="/more"
@@ -460,12 +541,12 @@ function Home() {
           <AdList ads={squareAds} />
         </aside>
 
-        <BottomAdBanner />
-        <FullscreenAd />
-        <PopupAd />
+        {bottomAdBanner?.length > 0 && <BottomAdBanner ads={bottomAdBanner} />}
+        {PopupAd?.length > 0 && <PopupAd ads={poupAd} />}
+        {fullScreenAd?.length > 0 && <FullscreenAd ads={fullScreenAd} />}
       </div>
     </main>
-);
+  );
 }
 
 export default Home;

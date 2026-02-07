@@ -5,6 +5,12 @@ import Pagination from "../../components/admin/Pagination";
 import ConfirmationPopup from "../../components/admin/ConfirmationPopup";
 import FullScreenAdFormPopup from "../../components/admin/FullScreenAdFormPopup";
 import { useApi } from "../../context/ApiContext";
+import {
+  addFullScreenAd,
+  deleteFullScreenAd,
+  fetchFullScreenAds,
+  updateFullScreenAd,
+} from "../../services/fullScreenAdService";
 
 function AdminFullScreenAd() {
   const { baseURL } = useApi();
@@ -22,26 +28,24 @@ function AdminFullScreenAd() {
 
   const ITEMS_PER_PAGE = 10;
 
+  const loadAds = async () => {
+    try {
+      const data = await fetchFullScreenAds(baseURL);
+      const formattedAds = data.map((ad) => ({
+        ...ad,
+        image: `${baseURL}/${ad.image.replace(/\\/g, "/")}`,
+        pageType: ad.page_type,
+        status: ad.status ? "Active" : "Inactive",
+      }));
+      setAds(formattedAds);
+    } catch (error) {
+      console.error("Failed to load fullscreen ads", error);
+    }
+  };
+
   useEffect(() => {
-    // Mock data
-    const mockAds = [
-      {
-        id: 1,
-        image: "https://via.placeholder.com/150",
-        title: "Sample Full Screen Ad 1",
-        pageType: "Home",
-        status: "Active",
-      },
-      {
-        id: 2,
-        image: "https://via.placeholder.com/150",
-        title: "Sample Full Screen Ad 2",
-        pageType: "All",
-        status: "Inactive",
-      },
-    ];
-    setAds(mockAds);
-  }, []);
+    loadAds();
+  }, [baseURL]);
 
   const handleAddNew = () => {
     setEditingAd(null);
@@ -54,16 +58,28 @@ function AdminFullScreenAd() {
   };
 
   const handleFormSubmit = async (formData) => {
-    console.log("Form Data:", formData);
-    // Mock update
-    if (editingAd) {
-      setAds(prev => prev.map(ad => ad.id === editingAd.id ? { ...ad, ...formData, image: formData.imageFile ? URL.createObjectURL(formData.imageFile) : ad.image } : ad));
-    } else {
-      setAds(prev => [{ id: Date.now(), ...formData, image: formData.imageFile ? URL.createObjectURL(formData.imageFile) : "https://via.placeholder.com/150" }, ...prev]);
+    try {
+      const data = new FormData();
+      data.append("title", formData.title);
+      data.append("page_type", formData.pageType);
+      data.append("link", formData.link);
+      data.append("status", formData.status === "Active" ? "true" : "false");
+
+      if (formData.imageFile) {
+        data.append("image", formData.imageFile);
+      }
+
+      if (editingAd) {
+        await updateFullScreenAd(baseURL, editingAd.id, data);
+      } else {
+        await addFullScreenAd(baseURL, data);
+      }
+      setIsPopupOpen(false);
+      setEditingAd(null);
+      loadAds();
+    } catch (error) {
+      console.error("Failed to save ad", error);
     }
-    
-    setIsPopupOpen(false);
-    setEditingAd(null);
   };
 
   const handleDelete = (ad) => {
@@ -75,8 +91,8 @@ function AdminFullScreenAd() {
     if (!adToDelete) return;
     setIsDeleting(true);
     try {
-      // await deleteFullScreenAd(baseURL, adToDelete.id);
-      setAds((prev) => prev.filter((a) => a.id !== adToDelete.id));
+      await deleteFullScreenAd(baseURL, adToDelete.id);
+      loadAds();
       setIsDeletePopupOpen(false);
       setAdToDelete(null);
     } catch (error) {
@@ -214,7 +230,7 @@ function AdminFullScreenAd() {
         </div>
       </div>
 
-      <DynamicTable columns={columns} data={currentAds} />
+      <DynamicTable columns={columns} data={currentAds} search={false} />
 
       {filteredAds.length > 0 && (
         <Pagination

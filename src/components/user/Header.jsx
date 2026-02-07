@@ -15,13 +15,13 @@ const navLinks = [
   { name: "Home", href: "/" },
   { name: "Latest News", href: "/latestnews" },
   { name: "Cinema News", href: "/cinemanews" },
+  { name: "Business Stories", href: "/more" },
   { name: "Meet The Person", href: "/meettheperson" },
   { name: "Trailers And Previews", href: "/teaserandpromo" },
-  { name: "Business Stories", href: "/more" },
 ];
 
 export default function Header() {
-   const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState("");
   const location = useLocation();
   const pathname = location.pathname;
@@ -33,7 +33,7 @@ export default function Header() {
         year: "numeric",
         month: "long",
         day: "numeric",
-      })
+      }),
     );
   }, []);
 

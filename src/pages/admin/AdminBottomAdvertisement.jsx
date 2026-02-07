@@ -5,6 +5,8 @@ import Pagination from "../../components/admin/Pagination";
 import ConfirmationPopup from "../../components/admin/ConfirmationPopup";
 import BottomAdFormPopup from "../../components/admin/BottomAdFormPopup";
 import { useApi } from "../../context/ApiContext";
+import { AddBottomAdBanner, deleteBottomBannerAd, fetchBottomAdBanner, updateBottomAdBanner } from "../../services/bottomAdService";
+
 
 function AdminBottomAdvertisement() {
   const { baseURL } = useApi();
@@ -22,29 +24,24 @@ function AdminBottomAdvertisement() {
 
   const ITEMS_PER_PAGE = 10;
 
-  // Mock data loading - replace with actual service call when available
+  const loadAds = async () => {
+    try {
+      const data = await fetchBottomAdBanner(baseURL);
+      const formattedAds = data.map((ad) => ({
+        ...ad,
+        image: `${baseURL}/${ad.image.replace(/\\/g, "/")}`,
+        pageType: ad.page_type,
+        status: ad.status ? "Active" : "Inactive",
+      }));
+      setAds(formattedAds.sort((a, b) => a.order - b.order));
+    } catch (error) {
+      console.error("Failed to load ads");
+    }
+  };
+
   useEffect(() => {
-    // Example data structure matching the request
-    const mockAds = [
-      {
-        id: 1,
-        image: "https://via.placeholder.com/150",
-        title: "Sample Bottom Ad 1",
-        pageType: "Home",
-        status: "Active",
-        order: 1,
-      },
-      {
-        id: 2,
-        image: "https://via.placeholder.com/150",
-        title: "Sample Bottom Ad 2",
-        pageType: "All",
-        status: "Inactive",
-        order: 2,
-      },
-    ];
-    setAds(mockAds);
-  }, []);
+    loadAds();
+  }, [baseURL]);
 
   const handleAddNew = () => {
     setEditingAd(null);
@@ -57,16 +54,30 @@ function AdminBottomAdvertisement() {
   };
 
   const handleFormSubmit = async (formData) => {
-    console.log("Form Data:", formData);
-    // Mock update for now
-    if (editingAd) {
-      setAds(prev => prev.map(ad => ad.id === editingAd.id ? { ...ad, ...formData, image: formData.imageFile ? URL.createObjectURL(formData.imageFile) : ad.image } : ad));
-    } else {
-      setAds(prev => [{ id: Date.now(), ...formData, image: formData.imageFile ? URL.createObjectURL(formData.imageFile) : "https://via.placeholder.com/150" }, ...prev]);
+    try {
+      const data = new FormData();
+      data.append("title", formData.title);
+      data.append("page_type", formData.pageType);
+      data.append("link", formData.link);
+      data.append("status", formData.status === "Active" ? "true" : "false");
+      data.append("order", formData.order);
+
+      if (formData.imageFile) {
+        data.append("image", formData.imageFile);
+      }
+
+      if (editingAd) {
+        await updateBottomAdBanner(baseURL, editingAd.id, data);
+      } else {
+        await AddBottomAdBanner(baseURL, data);
+      }
+
+      setIsPopupOpen(false);
+      setEditingAd(null);
+      loadAds();
+    } catch (error) {
+      console.error("Failed to save ad");
     }
-    
-    setIsPopupOpen(false);
-    setEditingAd(null);
   };
 
   const handleDelete = (ad) => {
@@ -78,8 +89,8 @@ function AdminBottomAdvertisement() {
     if (!adToDelete) return;
     setIsDeleting(true);
     try {
-      // await deleteBottomAd(baseURL, adToDelete.id);
-      setAds((prev) => prev.filter((a) => a.id !== adToDelete.id));
+      await deleteBottomBannerAd(baseURL, adToDelete.id);
+      loadAds();
       setIsDeletePopupOpen(false);
       setAdToDelete(null);
     } catch (error) {

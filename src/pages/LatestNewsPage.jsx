@@ -19,6 +19,9 @@ import { InlineGoogleAd } from "../components/user/GoogleAd";
 import BottomAdBanner from "../components/user/BottomAdBanner";
 import FullscreenAd from "../components/user/FullscreenAd";
 import PopupAd from "../components/user/PopupAd";
+import { fetchBottomAdBanner } from "../services/bottomAdService";
+import { fetchPopupAd } from "../services/popupAdService";
+import { fetchFullScreenAds } from "../services/fullScreenAdService";
 
 function LatestNewsPage() {
   const [searchParams] = useSearchParams();
@@ -27,6 +30,9 @@ function LatestNewsPage() {
   const [latestNews, setLatestNews] = useState([]);
   const [squareAds, setSquareAds] = useState([]);
   const [bannerAds, setBannerAds] = useState([]);
+  const [bottomAdBanner, setBottomAdBanner] = useState([]);
+  const [poupAd, setPopuAd] = useState([]);
+  const [fullScreenAd, setFullScreenAd] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [total, setTotal] = useState(0);
@@ -81,6 +87,51 @@ function LatestNewsPage() {
             title: ad.title,
           }));
         setBannerAds(filteredBannerAds);
+
+        // Fetch bottom banner ads
+        const bottomAdBannerData = await fetchBottomAdBanner(baseURL);
+        const filteredBottomAdBanner = bottomAdBannerData
+          .filter(
+            (ad) => ad.status && ad.page_type?.toLowerCase() === "latest news",
+          )
+          .sort((a, b) => a.order - b.order)
+          .slice(0, 5)
+          .map((ad) => ({
+            image: `${baseURL}/${ad.image.replace(/\\/g, "/")}`,
+            link: ad.link,
+            title: ad.title,
+          }));
+        setBottomAdBanner(filteredBottomAdBanner);
+
+        // Popup ads
+        const popupAdData = await fetchPopupAd(baseURL);
+        const filteredPopupAd = popupAdData
+          .filter(
+            (ad) => ad.status && ad.page_type?.toLowerCase() === "latest news",
+          )
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .slice(0, 1)
+          .map((ad) => ({
+            image: `${baseURL}/${ad.image.replace(/\\/g, "/")}`,
+            link: ad.link,
+            title: ad.title,
+          }));
+        setPopuAd(filteredPopupAd);
+
+        // Full screen ads
+        const fullScreenAdData = await fetchFullScreenAds(baseURL);
+        const filteredFullScreenAd = fullScreenAdData
+          .filter(
+            (ad) => ad.status && ad.page_type?.toLowerCase() === "latest news",
+          )
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .slice(0, 1)
+          .map((ad) => ({
+            image: `${baseURL}/${ad.image.replace(/\\/g, "/")}`,
+            link: ad.link,
+            title: ad.title,
+          }));
+        setFullScreenAd(filteredFullScreenAd);
       } catch (error) {
         console.log("Latest News Error");
       } finally {
@@ -144,9 +195,9 @@ function LatestNewsPage() {
         </aside>
       </div>
 
-      {/* <BottomAdBanner /> */}
-      {/* <FullscreenAd /> */}
-      {/* <PopupAd /> */}
+      {bottomAdBanner?.length > 0 && <BottomAdBanner ads={bottomAdBanner} />}
+      {fullScreenAd?.length > 0 && <FullscreenAd ads={fullScreenAd} />}
+      {PopupAd?.length > 0 && <PopupAd ads={poupAd} />}
     </main>
   );
 }

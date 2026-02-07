@@ -37,7 +37,7 @@ export default function AdvertisementFormPopup({
         setFormData({
           title: advertisement.title || "",
           pageType: advertisement.pageType || PAGE_TYPE_OPTIONS[0],
-          order: advertisement.order || "",
+          order: advertisement.order !== undefined && advertisement.order !== null ? advertisement.order : "",
           link: advertisement.link || "",
           status: advertisement.status || "Active",
           showContactButton: advertisement.showContactButton || false,

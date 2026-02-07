@@ -4,13 +4,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
-const BottomAdBanner = () => {
+const BottomAdBanner = ({ ads }) => {
   const [open, setOpen] = useState(true);
-
-  const ads = [
-    "/banner.jpg",
-    "/banner.jpg",
-  ];
 
   return (
     <div
@@ -35,13 +30,25 @@ const BottomAdBanner = () => {
           loop={true}
           className="w-full rounded-xl"
         >
-          {ads.map((img, index) => (
+          {ads.map((ad, index) => (
             <SwiperSlide key={index}>
-              <img
-                src={img}
-                alt="Advertisement"
-                className="w-full rounded-lg border border-gray-200 object-cover"
-              />
+              {ad.link ? (
+                <a href={ad.link} target="_blank" rel="noopener noreferrer">
+                  <img
+                    src={ad.image}
+                    alt={ad.title || "Advertisement"}
+                    className="w-full rounded-lg border border-gray-200 object-cover"
+                  />
+                </a>
+              ) : (
+                <div>
+                  <img
+                    src={ad.image}
+                    alt={ad.title || "Advertisement"}
+                    className="w-full rounded-lg border border-gray-200 object-cover"
+                  />
+                </div>
+              )}
             </SwiperSlide>
           ))}
         </Swiper>

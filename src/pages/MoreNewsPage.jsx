@@ -17,6 +17,10 @@ import CustomLoader from "../components/user/CustomLoader";
 import { InlineGoogleAd } from "../components/user/GoogleAd";
 import BottomAdBanner from "../components/user/BottomAdBanner";
 import FullscreenAd from "../components/user/FullscreenAd";
+import { fetchBottomAdBanner } from "../services/bottomAdService";
+import { fetchPopupAd } from "../services/popupAdService";
+import PopupAd from "../components/user/PopupAd";
+import { fetchFullScreenAds } from "../services/fullScreenAdService";
 
 function MoreNewsPage() {
   const { baseURL } = useApi();
@@ -27,6 +31,9 @@ function MoreNewsPage() {
   const [articles, setArticles] = useState([]);
   const [squareAds, setSquareAds] = useState([]);
   const [bannerAds, setBannerAds] = useState([]);
+  const [bottomAdBanner, setBottomAdBanner] = useState([]);
+  const [poupAd, setPopuAd] = useState([]);
+  const [fullScreenAd, setFullScreenAd] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [total, setTotal] = useState(0);
@@ -81,6 +88,51 @@ function MoreNewsPage() {
             title: ad.title,
           }));
         setBannerAds(filteredBannerAds);
+
+        // Fetch bottom banner ads
+        const bottomAdBannerData = await fetchBottomAdBanner(baseURL);
+        const filteredBottomAdBanner = bottomAdBannerData
+          .filter(
+            (ad) => ad.status && ad.page_type?.toLowerCase() === "more news",
+          )
+          .sort((a, b) => a.order - b.order)
+          .slice(0, 5)
+          .map((ad) => ({
+            image: `${baseURL}/${ad.image.replace(/\\/g, "/")}`,
+            link: ad.link,
+            title: ad.title,
+          }));
+        setBottomAdBanner(filteredBottomAdBanner);
+
+        // Popup ads
+        const popupAdData = await fetchPopupAd(baseURL);
+        const filteredPopupAd = popupAdData
+          .filter(
+            (ad) => ad.status && ad.page_type?.toLowerCase() === "more news",
+          )
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .slice(0, 1)
+          .map((ad) => ({
+            image: `${baseURL}/${ad.image.replace(/\\/g, "/")}`,
+            link: ad.link,
+            title: ad.title,
+          }));
+        setPopuAd(filteredPopupAd);
+
+        // Full screen ads
+        const fullScreenAdData = await fetchFullScreenAds(baseURL);
+        const filteredFullScreenAd = fullScreenAdData
+          .filter(
+            (ad) => ad.status && ad.page_type?.toLowerCase() === "more news",
+          )
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .slice(0, 1)
+          .map((ad) => ({
+            image: `${baseURL}/${ad.image.replace(/\\/g, "/")}`,
+            link: ad.link,
+            title: ad.title,
+          }));
+        setFullScreenAd(filteredFullScreenAd);
       } catch (error) {
         console.error("More page error");
       } finally {
@@ -147,8 +199,9 @@ function MoreNewsPage() {
         </aside>
       </div>
 
-      {/* <BottomAdBanner /> */}
-      {/* <FullscreenAd /> */}
+      {bottomAdBanner?.length > 0 && <BottomAdBanner ads={bottomAdBanner} />}
+      {PopupAd?.length > 0 && <PopupAd ads={poupAd} />}
+      {fullScreenAd?.length > 0 && <FullscreenAd ads={fullScreenAd} />}
     </main>
   );
 }

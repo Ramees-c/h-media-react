@@ -32,7 +32,7 @@ export default function BottomAdFormPopup({ isOpen, onClose, onSubmit, ad }) {
           pageType: ad.pageType || PAGE_TYPE_OPTIONS[0],
           link: ad.link || "",
           status: ad.status || "Active",
-          order: ad.order || "",
+          order: ad.order !== undefined && ad.order !== null ? ad.order : "",
         });
         setImagePreview(ad.image || null);
       } else {
