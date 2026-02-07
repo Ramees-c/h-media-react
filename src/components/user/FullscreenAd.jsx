@@ -59,7 +59,7 @@ const FullscreenAd = ({ ads }) => {
         <img
           src={ad.image}
           alt={ad.title || "Ad Left"}
-          className="absolute top-0 left-0 w-[200%] h-full max-w-none object-contain z-10"
+          className="absolute top-0 left-0 w-[200%] h-full max-w-none object-contain md:object-fill z-10"
         />
       </div>
 
@@ -77,7 +77,7 @@ const FullscreenAd = ({ ads }) => {
         <img
           src={ad.image}
           alt={ad.title || "Ad Right"}
-          className="absolute top-0 right-0 w-[200%] h-full max-w-none object-contain z-10"
+          className="absolute top-0 right-0 w-[200%] h-full max-w-none object-contain md:object-fill z-10"
         />
       </div>
     </div>
